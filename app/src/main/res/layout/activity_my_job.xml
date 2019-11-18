@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorDefaultBackgView"
+    tools:context=".Views.activity.RoutePlanActivity">
+
+    <LinearLayout android:orientation="horizontal"
+        android:padding="3dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btnJobByDay"
+            android:textAlignment="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="?android:attr/spinnerStyle"/>
+
+        <LinearLayout
+            android:gravity="right"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/imbRoutePlanRefresh"
+                android:src="@drawable/ic_refresh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <Button
+                android:id="@+id/btnRoutePlanToday"
+                android:text="Today"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <Button
+                android:id="@+id/btnRoutePlanThisMonth"
+                android:text="This week"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/my_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorDefaultBackg"
+            android:scrollbars="vertical" />
+
+        <TextView
+            android:id="@+id/txtRoutePlanEmptyView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorDefaultBackg"
+            android:gravity="center"
+            android:visibility="gone"
+            android:text="No job" />
+
+    </LinearLayout>
+
+</LinearLayout>

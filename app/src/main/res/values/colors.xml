@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+    #2196F3
+    -->
+
+    <color name="colorPrimary">#4F7FD1</color>
+    <color name="colorPrimaryDark">#4F7FD1</color>
+    <color name="colorAccent">#54D81B</color>
+
+    <color name="colorDefaultBackg">#F7E4E4DE</color>
+    <color name="colorDefaultBackgView">#FDFDFB</color>
+    <color name="colorDefaultText">@color/colorPrimaryDark</color>
+    <color name="colorDefaultBackgHeader">@color/colorPrimary</color>
+
+    <color name="public_toolbar">#CDDC39</color>
+    <color name="textSave">#152DA5</color>
+
+    <color name="public_button_bacground">#DFDFDF</color>
+    <color name="splash_backg">#FAEEEBEB</color>
+</resources>

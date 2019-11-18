@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Views.activity.PartDetailActivity">
+
+    <ImageView
+        android:background="#3F51B5"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"/>
+
+    <TextView
+        android:id="@+id/txtPartDetailTitle"
+        android:padding="@dimen/public_padding"
+        android:textColor="#f00"
+        android:textSize="@dimen/public_textSize"
+        android:text="This is title of product. \nIt may be long or short"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TableLayout
+        android:padding="@dimen/public_padding"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TableRow>
+            <TextView android:text="Company: "
+                android:textSize="@dimen/public_textSize"/>
+
+            <EditText android:enabled="false"/>
+            <TextView
+                android:id="@+id/txtPartDetailCompany"
+                android:textSize="@dimen/public_textSize"
+                
+                android:singleLine="true" />
+
+        </TableRow>
+
+        <TableRow>
+            <TextView android:text="Product Group: " />
+
+            <EditText android:enabled="false"/>
+            <TextView
+                android:id="@+id/txtPartDetailProductGroup"
+                
+                
+                android:singleLine="true" />
+
+        </TableRow>
+
+        <TableRow>
+            <TextView android:text="Product ID: "
+                android:textSize="@dimen/public_textSize"/>
+
+            <EditText android:enabled="false"/>
+            <TextView
+                android:id="@+id/txtPartDetailProductID"
+                
+                
+                android:singleLine="true" />
+
+        </TableRow>
+
+        <TableRow>
+            <TextView android:text="Product Name: "
+                android:textSize="@dimen/public_textSize" />
+
+            <EditText android:enabled="false"/>
+            <TextView
+                android:id="@+id/txtPartDetailProductName"
+                
+                
+                android:singleLine="true" />
+
+        </TableRow>
+
+        <TableRow>
+            <TextView android:text="Unit Price: "
+                android:textSize="@dimen/public_textSize" />
+
+            <EditText android:enabled="false"/>
+            <TextView
+                android:id="@+id/txtPartDetailUnitPrice"
+                
+                
+                android:singleLine="true" />
+
+        </TableRow>
+
+        <TableRow>
+            <TextView android:text="UOM: "
+                android:textSize="@dimen/public_textSize"/>
+
+            <EditText android:enabled="false"/>
+            <TextView
+                android:id="@+id/txtPartDetailUOM"
+                
+                
+                android:singleLine="true" />
+
+        </TableRow>
+
+        <TableRow>
+            <TextView android:text="Date Update: "
+                android:textSize="@dimen/public_textSize"/>
+
+            <EditText android:enabled="false"/>
+            <TextView
+                android:id="@+id/txtPartDetailDateUpdate"
+                
+                
+                android:singleLine="true" />
+
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:text="Quantity: "
+                android:textSize="@dimen/public_textSize"/>
+
+            <EditText android:enabled="false"/>
+
+            <TextView
+                android:id="@+id/txtPartDetailQuantity"
+                android:text="value"/>
+        </TableRow>
+
+    </TableLayout>
+
+
+
+</LinearLayout>
+</ScrollView>

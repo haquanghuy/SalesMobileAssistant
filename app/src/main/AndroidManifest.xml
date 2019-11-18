@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.doannganh.salesmobileassistant">
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/logo"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".WelcomeActivity"></activity>
+        <activity
+            android:name=".Views.activity.SplashScreenActivity"
+            android:theme="@style/SplashscreenTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".Views.activity.LanguageActivity"
+            android:parentActivityName=".Views.activity.SettingActivity" />
+        <activity
+            android:name=".Views.activity.ConfigActivity"
+            android:parentActivityName=".Views.activity.SettingActivity" />
+        <activity
+            android:name=".TestActivity"
+            android:parentActivityName=".Views.activity.MainActivity" />
+        <activity
+            android:name=".Views.activity.SettingActivity"
+            android:parentActivityName=".Views.activity.MainActivity" />
+        <activity
+            android:name=".Views.activity.RoutePlanActivity"
+            android:parentActivityName=".Views.activity.MainActivity" />
+        <activity
+            android:name=".Views.activity.PartDetailActivity"
+            android:parentActivityName=".Views.activity.PartsActivity" />
+        <activity
+            android:name=".Views.activity.PartsActivity"
+            android:parentActivityName=".Views.activity.MainActivity" />
+        <activity
+            android:name=".Views.activity.ListOrdersActivity"
+            android:parentActivityName=".Views.activity.OrdersActivity" />
+        <activity
+            android:name=".Views.activity.OrdersActivity"
+            android:parentActivityName=".Views.activity.MainActivity" />
+        <activity
+            android:name=".Views.activity.NewOrderActivity"
+            android:parentActivityName=".Views.activity.OrdersActivity" />
+        <activity android:name=".Views.activity.LoginActivity" />
+        <activity android:name=".Views.activity.MainActivity"></activity>
+    </application>
+
+</manifest>

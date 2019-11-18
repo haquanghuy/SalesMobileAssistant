@@ -1,0 +1,148 @@
+<resources>
+    <string name="app_name">Sales Mobile Assistant</string>
+
+    <!--layout-->
+    <string name="welcom_title">CONFIGURATION API PATH</string>
+    <string name="splash_info">Currently the system only uses the default API. In case you get an error while editing settings in the settings, select Reset API at the login screen. !</string>
+
+    <string name="login_title">Login</string>
+    <string name="login_reset_api"><u>Reset API default</u></string>
+    <string name="login_reset_api_message">Your previous API configuration will be lost. Are you sure ? If the application does not turn off, turn it off completely.</string>
+    <string name="login_hint_username">Your username</string>
+    <string name="login_hint_password">Your password</string>
+    <string name="login_text_remember">Remember me</string>
+    <string name="login_text_btLogin">Login</string>
+    <string name="login_des">If you can’t login using your account, please contact the Sales Admin.</string>
+    <string name="login_success">Login success</string>
+    <string name="login_fail">Login fail. Please try again</string>
+
+    <string name="navi_home">Home</string>
+    <string name="navi_func2">Report</string>
+    <string name="navi_func3">Check for update</string>
+    <string name="navi_func4">Feedback</string>
+    <string name="navihead_salesman">Salesman</string>
+    <string name="navihead_salesmanage">Sales management</string>
+    <string name="navi_logout">Logout</string>
+
+    <string name="neworder_orderid">Order ID</string>
+    <string name="neworder_employeeid">Employee ID</string>
+    <string name="neworder_customernameid">Choose a customer</string>
+    <string name="neworder_address1">Customer Address 1</string>
+    <string name="neworder_address2">Customer Address 2</string>
+    <string name="neworder_needbydate">Need By Date</string>
+    <string name="neworder_aboutcustomer">Information about customers</string>
+
+
+    <string name="neworder_text_buttonNext">Next</string>
+    <string name="neworder_text_buttonClear">Previous</string>
+    <string name="neworder_text_buttonNextChange">Submit to center</string>
+    <string name="neworder_text_saveorder">Save this order</string>
+
+    <string name="neworder_product_hintproduct">Product name</string>
+    <string name="neworder_product_hintquantity">Quantity</string>
+    <string name="neworder_product_buttonadd">Add more product line</string>
+
+    <string name="config_note">Note: After this setting is changed, you need restart the app. If the application does not turn off, turn it off completely. You can reset this configuration at the login screen.</string>
+
+    <!-- loading -->
+    <string name="layout_loading_text">Loading...</string>
+
+    <!-- code java-->
+    <string name="main_actionbar_open">Open</string>
+    <string name="main_actionbar_close">Close</string>
+
+    <string name="main_icon_func1">Orders</string>
+    <string name="main_icon_func2">Product</string>
+    <string name="main_icon_func3">My Job</string>
+    <string name="main_icon_func4">My Account</string>
+    <string name="main_icon_func5">Tools</string>
+    <string name="main_icon_func6">Setting</string>
+
+    <!-- orders -->
+    <string name="orders_tag">Orders</string>
+    <string name="orders_item0">New Order</string>
+    <string name="orders_item1">All my Order</string>
+    <string name="orders_item2">Syns Oders</string>
+    <string name="orders_item3">Report</string>
+
+    <!-- new order-->
+    <string name="neworder_tag">New Order</string>
+    <string name="neworder_view_tag">View Order</string>
+    <string name="neworder_view_tag_pending">(Save Offline)</string>
+    <string name="neworder_view_tag_verifying">(Verifying)</string>
+    <string name="neworder_view_tag_posted">(Posted)</string>
+    <string name="neworder_customer_nocustomer">You haven\'t selected a customer.</string>
+    <string name="neworder_getIDCurrent">ERROR WHEN INITIALIZATION NEW ORDER! PLEASE CONNECT DEVELOPER !!!!</string>
+    <string name="neworder_product_chooseproduct">Choose product</string>
+    <string name="neworder_product_notfindproduct">Product does not exist in stock. Please check and try again.</string>
+    <string name="neworder_product_textbeforequantity">Quantity exists: </string>
+    <string name="neworder_product_textbeforequantityError">This product is not ready for sale</string>
+    <string name="neworder_product_textLableQuantity">"QL: "</string>
+    <string name="neworder_product_dialog_message_existsproduct">You have previously added this product. Do you want to accumulate?</string>
+    <string name="neworder_total_tax">"Tax (%): "</string>
+    <string name="neworder_total_totaltax">"Total tax (VND): "</string>
+    <string name="neworder_total_discountpercen">"Discount percentage (%): "</string>
+    <string name="neworder_total_discountmoney">"Discount (VND): "</string>
+    <string name="neworder_total_totalorder">"Total order money (VND): "</string>
+
+    <!-- list order-->
+    <string name="listorder_tag">List Order</string>
+    <string name="listorder_total">Total: </string>
+    <string name="listorder_notsynced">Not synced: </string>
+    <string name="listorder_delete_message">This order will be permanently deleted and cannot be restored. Do you want to delete?</string>
+    <string name="listorder_delete_error">Failed to delete this order</string>
+    <string name="listorder_delete_success">Successfully deleted</string>
+    <string name="listorder_list_thismonth">This month</string>
+    <string name="listorder_list_lastmonth">Last month</string>
+    <string name="listorder_list_other">Other</string>
+
+    <!-- Sync order-->
+    <string name="syncorder_tag">Sync Order</string>
+
+    <!-- Product-->
+    <string name="product_tag">Product</string>
+
+    <!-- Product info-->
+    <string name="productinfo_tag">Product Info</string>
+    <string name="productinfo_title">Details for: </string>
+
+    <!-- RoutePlanDAO-->
+    <string name="routeplan_tag">Route Plan</string>
+    <string name="routeplan_plan_check">You have already done this mission. Make new?</string>
+    <string name="routeplan_cannot_change_status"> but system can\'t to change RoutePlan\'s status.</string>
+
+    <!-- Setting-->
+    <string name="setting_tag">Setting</string>
+    <string name="setting_confign">Configuration</string>
+    <string name="setting_lang">Language</string>
+    <string name="setting_theme">Theme</string>
+    <string name="setting_update">Check for updates</string>
+    <string name="setting_about">About</string>
+    <string name="setting_about_content">App name: Sales Mobile Assistant\\nAuthor:\\n          Ha Quang Huy\\n          Nguyen Truong Gia\\nContact:\\n          16510100666huy@ou.edu.vn          16510100666huy@ou.edu.vn Copyright belongs to the above authors</string>
+
+    <!-- Config-->
+    <string name="config_tag">Configuration</string>
+
+    <!-- util -->
+    <string name="checkconnect_error">Please check your connect</string>
+
+    <string name="post_json_success">The order has been sent to the server</string>
+    <string name="post_json_error_order">System error. Check and post again</string>
+    <string name="post_json_error_detail">"Error when choose product"</string>
+    <string name="post_json_exists">This order has been posted to the previous center</string>
+
+    <string name="save_order_error">This order can only be viewed and posted to center</string>
+    <string name="save_order_success">The order has been successfully saved</string>
+
+
+    <string name="search_title">Search by customer name</string>
+    <!-- loading -->
+    <string name="dialog_checkaccount">Checking your account...</string>
+    <string name="dialog_init">Initializing...</string>
+    <string name="config_mess">Do you want to change value? If true, touch \'Yes\'</string>
+    <string name="config_sync">Syncing your order...</string>
+    <string name="neworder_invalid_customer">This customer is not under your jurisdiction.</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

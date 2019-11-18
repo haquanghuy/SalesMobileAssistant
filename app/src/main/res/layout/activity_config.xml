@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="@dimen/public_padding"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Views.activity.ConfigActivity">
+
+        <TextView
+            android:textStyle="bold" android:text="Path APIs ('https://your-domain:port/SalesMobileAPI/'):"/>
+
+        <EditText
+            android:id="@+id/edtConfigPath"
+            android:enabled="false" android:singleLine="true"
+            android:text="EpicorRestAPIpath" android:gravity="right"/>
+
+        <TextView
+            android:textStyle="bold" android:text="Username:"/>
+        <EditText
+            android:id="@+id/edtConfigUser"
+            android:enabled="false" android:singleLine="true"
+            android:text="EpicorUser" android:gravity="right"/>
+
+
+        <TextView
+            android:textStyle="bold" android:text="Password:"/>
+        <EditText
+            android:id="@+id/edtConfigPass"
+            android:enabled="false" android:singleLine="true"
+            android:text="EpicorPassword" android:gravity="right"/>
+
+
+        <TextView
+            android:textStyle="bold" android:text="Company (CompanyID):"/>
+        <EditText
+            android:id="@+id/edtConfigCompany"
+            android:enabled="false" android:singleLine="true"
+            android:text="EpicorCompany" android:gravity="right"/>
+
+
+    <LinearLayout android:orientation="vertical"
+        android:id="@+id/tabRowConfigButton"
+        android:visibility="invisible">
+        <Button android:text="Save"
+            android:onClick="SaveConfig"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView android:text="@string/config_note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+
+</TableLayout>

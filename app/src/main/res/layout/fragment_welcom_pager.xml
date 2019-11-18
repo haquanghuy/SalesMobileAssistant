@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Views.fragment.WelcomPagerFragment">
+
+    <ImageView
+        android:background="@color/colorPrimaryDark"
+        android:scaleType="fitXY"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <TextView
+        android:text="Day la mot vai giai thich ve app"
+        android:padding="@dimen/public_padding"
+        android:textColor="#fff"
+        android:textSize="17sp"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <RelativeLayout
+        android:layout_marginBottom="17dp"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="Skip"
+            android:layout_marginLeft="5dp"
+            android:textColor="#fff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:text="Next"
+            android:layout_marginLeft="5dp"
+            android:textColor="#fff"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <RelativeLayout
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <View
+                android:id="@+id/viewSkip1"
+                android:background="@color/colorDefaultBackgView"
+                android:layout_width="12dp"
+                android:layout_height="12dp"/>
+
+            <View
+                android:id="@+id/viewSkip2"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/viewSkip1"
+                android:background="@color/colorDefaultBackgView"
+                android:layout_width="12dp"
+                android:layout_height="12dp"/>
+
+            <View
+                android:id="@+id/viewSkip3"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/viewSkip2"
+                android:background="@color/colorDefaultBackgView"
+                android:layout_width="12dp"
+                android:layout_height="12dp"/>
+
+        </RelativeLayout>
+    </RelativeLayout>
+</RelativeLayout>

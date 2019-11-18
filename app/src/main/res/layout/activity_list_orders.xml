@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Views.activity.ListOrdersActivity">
+
+    <LinearLayout android:orientation="horizontal"
+        android:paddingLeft="@dimen/public_padding"
+        android:paddingRight="@dimen/public_padding"
+        android:background="@color/colorDefaultBackg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:gravity="center"
+            android:text="huy"
+            android:id="@+id/btnOrderListSelectMonth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="?android:attr/spinnerStyle" />
+
+        <TextView android:layout_weight="1"
+            android:id="@+id/txtOrdersLisetOrderTotalNum"
+            android:text="Total"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"/>
+
+        <TextView android:layout_weight="1"
+            android:id="@+id/txtOrdersLisetOrderSyncNum"
+            android:gravity="center"
+            android:text="Not sync"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout android:background="@color/colorDefaultBackg"
+        android:paddingLeft="@dimen/public_padding"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText android:gravity="center"
+            android:enabled="false"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/custom_border_edittext"
+            android:id="@+id/edtSpinnerMonth"
+            android:layout_width="35dp"
+            android:layout_height="wrap_content"
+            android:hint="12"
+            android:inputType="number"
+            android:singleLine="true" />
+
+        <EditText android:gravity="center"
+            android:enabled="false"
+            android:background="@drawable/custom_border_edittext"
+            android:id="@+id/edtSpinnerYear"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:hint="2019"
+            android:inputType="number"
+            android:singleLine="true" />
+
+        <Button
+            android:text="OK"
+            android:id="@+id/btnOrderListOK"
+            android:visibility="invisible"
+            android:onClick="ClickButtonOK"
+            android:layout_width="45dp"
+            android:layout_height="38dp"/>
+    </LinearLayout>
+
+    <ListView
+        android:paddingLeft="@dimen/public_padding"
+        android:paddingRight="@dimen/public_padding"
+        android:background="@color/colorDefaultBackgView"
+        android:id="@+id/lvListOrders"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>

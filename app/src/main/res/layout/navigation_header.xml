@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="30dp"
+    android:paddingLeft="7dp"
+    android:paddingRight="7dp"
+    android:paddingBottom="20dp"
+    android:background="@drawable/gradient_color_menu">
+
+        <ImageView
+            android:src="@drawable/user_icon"
+            android:id="@+id/imgNaviHeader"
+            android:layout_width="70dp"
+            android:layout_height="70dp"/>
+
+        <TextView
+            android:id="@+id/txtNaviHeader"
+            android:layout_marginTop="15dp"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginLeft="70dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name of sale"
+            android:textColor="#fff" />
+
+        <TextView
+            android:textSize="12sp"
+            android:id="@+id/txtNaviSubtext"
+            android:layout_marginLeft="70dp"
+            android:layout_marginTop="37dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Info about account"
+            android:textColor="#fff" />
+
+</FrameLayout>
