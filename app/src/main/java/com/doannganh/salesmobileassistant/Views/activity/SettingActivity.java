@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.doannganh.salesmobileassistant.R;
 import com.doannganh.salesmobileassistant.Views.adapter.CustomAdapterListViewWithTextView;
@@ -46,6 +47,12 @@ public class SettingActivity extends AppCompatActivity {
                         break;
                     case 1:
                         startActivity(new Intent(SettingActivity.this, LanguageActivity.class));
+                        break;
+                    case 2:
+                        Toast.makeText(SettingActivity.this, "Developing", Toast.LENGTH_LONG).show();
+                        break;
+                    case 3:
+                        Toast.makeText(SettingActivity.this, R.string.setting_update_no, Toast.LENGTH_SHORT).show();
                         break;
                     case 4:
                         AlertDialog.Builder builder = new AlertDialog.Builder(SettingActivity.this);

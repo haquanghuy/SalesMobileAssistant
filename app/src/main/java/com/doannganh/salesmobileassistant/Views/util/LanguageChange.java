@@ -12,6 +12,9 @@ public class LanguageChange {
     private final String PREFS_NAME = "preferencesLanguage";
     private final String PREF_LANG = "Language";
 
+    public static String ENGLISH = "en";
+    public static String VIETNAMESE = "vi";
+
     public LanguageChange(Activity context){
         this.context = context;
     }
@@ -19,7 +22,7 @@ public class LanguageChange {
     public void loadLocale() {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME,
                 Activity.MODE_PRIVATE);
-        String language = prefs.getString(PREF_LANG, "");
+        String language = prefs.getString(PREF_LANG, ENGLISH);
         changeLang(language);
     }
 
@@ -44,7 +47,10 @@ public class LanguageChange {
         Locale.getDefault().getDisplayLanguage()---> English
          */
         //return Locale.getDefault().getLanguage(); en
-        return Locale.getDefault().getDisplayLanguage();
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME,
+                Activity.MODE_PRIVATE);
+        return prefs.getString(PREF_LANG, ENGLISH);
+        //return Locale.getDefault().getDisplayLanguage();
     }
 
     public void saveLocale(String lang) {

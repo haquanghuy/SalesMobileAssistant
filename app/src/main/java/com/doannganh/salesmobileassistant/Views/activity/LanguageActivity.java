@@ -39,13 +39,10 @@ public class LanguageActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch (position){
                     case 0:
-                        setLanguage("");
+                        setLanguage(LanguageChange.ENGLISH);
                         break;
                     case 1:
-                        setLanguage("en");
-                        break;
-                    case 2:
-                        setLanguage("vi");
+                        setLanguage(LanguageChange.VIETNAMESE);
                         break;
                 }
             }
@@ -57,12 +54,14 @@ public class LanguageActivity extends AppCompatActivity {
 
         // load language present
         String langNow = languageChange.getLanguagePresent();
+        langNow = langNow.equals(LanguageChange.ENGLISH)
+                ?getString(R.string.setting_lang_en)
+                :getString(R.string.setting_lang_vi);
 
         lvLang = findViewById(R.id.lvLanguage);
         listFunc = new ArrayList<>();
-        listFunc.add("Default");
-        listFunc.add("English");
-        listFunc.add("Tiếng Việt");
+        listFunc.add(getString(R.string.setting_lang_en));
+        listFunc.add(getString(R.string.setting_lang_vi));
 
         arrayAdapter = new ArrayAdapter(LanguageActivity.this, android.R.layout.simple_list_item_single_choice, listFunc);
         lvLang.setAdapter(arrayAdapter);

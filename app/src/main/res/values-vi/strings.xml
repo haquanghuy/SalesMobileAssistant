@@ -64,7 +64,6 @@
     <string name="routeplan_cannot_change_status">" nhưng hệ thống không thể thay đổi trạng thái của công việc"</string>
     <string name="save_order_error">Đơn hàng này chỉ có thể xem hoặc gửi lên trung tâm</string>
     <string name="save_order_success">Đã lưu đơn hàng</string>
-    <string name="setting_about_content">Tên ứng dụng: Sales Mobile Assistant\\nTác giả:\\n          Hà Quang Huy\\n          Nguyễn Trương Gia\\nLiên hệ: 16510100666huy@ou.edu.vn 16510100666huy@ou.edu.vn Bản quyền thuộc về các tác giả trên</string>
     <string name="setting_tag">Cài đặt</string>
     <string name="syncorder_tag">Đồng bộ đơn hàng</string>
     <string name="routeplan_tag">Công việc</string>
@@ -103,4 +102,6 @@
     <string name="splash_info">Hiện tại hệ thống chỉ sử dụng API mặc định. Trường hợp bạn gặp lỗi khi chỉnh sửa thiết lập trong cài đặt, hãy chọn Reset API tại màn hình đăng nhập. !</string>
     <string name="login_reset_api"><u>Reset API default</u></string>
     <string name="login_reset_api_message">"Cấu hình API trước đó của bạn sẽ bị mất. Bạn có chắc ? Nếu ứng dụng không tắt, bạn hãy tắt hoàn toàn nó. "</string>
+    <string name="setting_update_no">Phiên bản của bạn đã là mới nhất</string>
+    <string name="setting_lang_vi">Tiếng Việt</string>
 </resources>
