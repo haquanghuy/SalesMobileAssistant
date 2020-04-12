@@ -15,19 +15,19 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.doannganh.salesmobileassistant.R;
 import com.doannganh.salesmobileassistant.Views.activity.MainActivity;
 import com.doannganh.salesmobileassistant.Views.activity.NewOrderActivity;
 import com.doannganh.salesmobileassistant.Views.customView.CustomDialogWithListViewCustom;
-import com.doannganh.salesmobileassistant.Views.util.UtilFilter;
-import com.doannganh.salesmobileassistant.Views.util.UtilMethod;
+import com.doannganh.salesmobileassistant.util.UtilFilter;
+import com.doannganh.salesmobileassistant.util.UtilMethod;
 import com.doannganh.salesmobileassistant.model.Custom_list_item;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,11 +35,13 @@ import com.doannganh.salesmobileassistant.Views.adapter.CustomAdapterListView;
 import com.doannganh.salesmobileassistant.model.OrderDetail;
 import com.doannganh.salesmobileassistant.model.Product;
 import com.doannganh.salesmobileassistant.model.ProductInSite;
+import com.doannganh.salesmobileassistant.util.ConstantUtil;
+import com.doannganh.salesmobileassistant.util.StringUtil;
 
 public class NewOrderProduct extends Fragment {
     Activity context;
 
-    LinearLayout linearLayout;
+    RelativeLayout relativeLayout;
     ListView listView;
     EditText editTextQuantity;
     Button btnAdd;
@@ -50,7 +52,7 @@ public class NewOrderProduct extends Fragment {
     List<OrderDetail> orderDetailS; // show order co san
     ArrayList<Custom_list_item> list, listProduct;
     CustomAdapterListView customAdapterListView;
-    public static int positionProductTemp; // product chon hien tai
+    public static int positionProductTemp = -1; // product chon hien tai
     List<OrderDetail> listOrderDetail; // luu du lieu for sync
 
     String TAG;
@@ -76,16 +78,20 @@ public class NewOrderProduct extends Fragment {
         super.onCreate(savedInstanceState);
 
         list = new ArrayList<>();
+        if(NewOrderActivity.orderDetail != null)
+            NewOrderActivity.orderDetail.clear();
         NewOrderActivity.orderDetail = new ArrayList<OrderDetail>();
 
         listProduct = new ArrayList<>();
         for(Product p : MainActivity.listProductSource){
-            NumberFormat format = NumberFormat.getCurrencyInstance();
             ProductInSite pIn = UtilFilter.getProductInSite(MainActivity.listProductInSite, p.getProdID());
-            Custom_list_item pNew = new Custom_list_item(p.getProdName(), format.format(p.getUnitPrice())
-                    , getString(R.string.neworder_product_textLableQuantity)
-                    + UtilMethod.formartDoubleToStringInt(pIn.getQuantity()) + "");
+
+            Custom_list_item pNew = new Custom_list_item(p.getProdName()
+                    , StringUtil.formatVnCurrence(context, String.valueOf(p.getUnitPrice()))
+                    , getString(R.string.neworder_product_textLableQuantity) + UtilMethod.formartDoubleToStringInt(pIn.getQuantity()) + "");
+
             pNew.setTAG(p.getProdID());
+
             listProduct.add(pNew);
         }
     }
@@ -95,7 +101,7 @@ public class NewOrderProduct extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         context = getActivity();
         if (orderDetailS != null) totalMoney = 0.0;
-        linearLayout = (LinearLayout) inflater.inflate(R.layout.fragment_new_order_product, null);
+        relativeLayout = (RelativeLayout) inflater.inflate(R.layout.fragment_new_order_product, null);
 
         // tham chieu
         AnhXa();
@@ -103,16 +109,15 @@ public class NewOrderProduct extends Fragment {
         if(NewOrderActivity.orderShow != null){
             if(listOrderDetail == null) {
                 orderDetailS = NewOrderActivity.orderDetailShow;
-                if (NewOrderActivity.orderShow.getOrderStatus() > 1)
+                if (NewOrderActivity.orderShow.getOrderStatus() > ConstantUtil.DB_ORDER_STATUS_PENDING)
                     btnAdd.setEnabled(false);
             }
         }
 
-        NumberFormat format = NumberFormat.getCurrencyInstance();
-        txtTotal.setText(format.format(totalMoney));
+        SetTotalMoney(0);
 
         if(quantityProductChoose != 0)
-            textView.setText(getString(R.string.neworder_product_textbeforequantity) + quantityProductChoose + "");
+            textView.setText(getString(R.string.neworder_product_textbeforequantity) + quantityProductChoose);
 
         KhoiTaoList();
 
@@ -120,12 +125,12 @@ public class NewOrderProduct extends Fragment {
         EventClickAdd();
 
         registerForContextMenu(listView);
-        return linearLayout;
+        return relativeLayout;
     }
 
 
     private void KhoiTaoList() {
-        customAdapterListView = new CustomAdapterListView(context, R.layout.custom_list_item, list);
+        customAdapterListView = new CustomAdapterListView(context, list);
         listView.setAdapter(customAdapterListView);
 
         if(orderDetailS != null){
@@ -138,7 +143,8 @@ public class NewOrderProduct extends Fragment {
                 Product p = UtilFilter.getProductByID( MainActivity.listProductSource, o.getProdID());
                 if(p == null) continue;
                 int qua = (int) o.getSellingQuantity();
-                Custom_list_item c = new Custom_list_item(p.getProdName(), qua+"", o.getUnitPrice()+"");
+                Custom_list_item c = new Custom_list_item(p.getProdName(), qua + ""
+                        , StringUtil.formatVnCurrence( context,o.getUnitPrice() + ""));
                 c.setTAG(p.getProdID());
                 list.add(c);
                 SetTotalMoney(p.getUnitPrice() * qua);
@@ -149,15 +155,17 @@ public class NewOrderProduct extends Fragment {
     }
 
     private void AnhXa() {
-        listView = linearLayout.findViewById(R.id.lvNewOrderProduct);
-        editTextQuantity = linearLayout.findViewById(R.id.edtNewOrderProductQuantity);
-        btnAdd = linearLayout.findViewById(R.id.btnNewOrderProductAdd);
-        textView = linearLayout.findViewById(R.id.txtNewOrderProductGetQuantity);
-        btnShowProduct = linearLayout.findViewById(R.id.btnNewOrderProductGetProduct);
-        txtTotal = linearLayout.findViewById(R.id.txtNewOrderProductTotal);
+        listView = relativeLayout.findViewById(R.id.lvNewOrderProduct);
+        editTextQuantity = relativeLayout.findViewById(R.id.edtNewOrderProductQuantity);
+        btnAdd = relativeLayout.findViewById(R.id.btnNewOrderProductAdd);
+        textView = relativeLayout.findViewById(R.id.txtNewOrderProductGetQuantity);
+        btnShowProduct = relativeLayout.findViewById(R.id.btnNewOrderProductGetProduct);
+        txtTotal = relativeLayout.findViewById(R.id.txtNewOrderProductTotal);
     }
 
     void SaveToOrderDetail(){
+        if(listOrderDetail != null)
+            listOrderDetail.clear();
         listOrderDetail = new ArrayList<>();
         int orLine = 1;
 
@@ -166,20 +174,18 @@ public class NewOrderProduct extends Fragment {
                     NewOrderActivity.orderHead.getMyOrderID());
             orderDetail.setOrderDetail( orLine, list.get(index).getTAG(),
                     (double) Integer.parseInt(list.get(index).getSubTitle()),
-                    Double.parseDouble(list.get(index).getText()));
+                    StringUtil.parseDoubleFromCurrence(list.get(index).getText()));
 
             orLine++;
             listOrderDetail.add(orderDetail);
         }
 
         NewOrderActivity.orderDetail = listOrderDetail;
-        NewOrderActivity.totalMoneyProduct = totalMoney;
     }
 
     private void SetTotalMoney(double money) {
         totalMoney += money;
-        NumberFormat format = NumberFormat.getCurrencyInstance();
-        txtTotal.setText(format.format(totalMoney ));
+        txtTotal.setText(StringUtil.formatVnCurrence(context, String.valueOf(totalMoney)));
     }
 
     private void EventShowProduct() {
@@ -197,75 +203,72 @@ public class NewOrderProduct extends Fragment {
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    final Product pTemp = MainActivity.listProductSource.get(positionProductTemp);
-                    int quantity = 1;
-                    try{
-                        quantity = Integer.parseInt(editTextQuantity.getText()+"");
-                    }catch (Exception e){
-                        quantity = 1;
+                if (positionProductTemp == -1) {
+                    Toast.makeText(context, R.string.neworder_product_pleaseChooswProduct, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                final Product pTemp = MainActivity.listProductSource.get(positionProductTemp);
+                int quantity = 1;
+                try {
+                    quantity = Integer.parseInt(editTextQuantity.getText() + "");
+                    if(quantity < 1) {
+                        Toast.makeText(context, getString(R.string.neworder_product_pleaseChooswProduct), Toast.LENGTH_SHORT).show();
+                        return;
                     }
+                } catch (Exception e) {
+                    quantity = 1;
+                }
 
-                    // xu ly luu trung product da ton tai
-                    if(list.size() >= 1) {
-                        for (final Custom_list_item c : list
-                        ) {
-                            if (c.getTitle().equals(pTemp.getProdName())) {
-                                final int index = list.indexOf(c);
-                                final int oldQ = Integer.parseInt(c.getSubTitle());
-                                final int newQ = oldQ + quantity;
+                // xu ly luu trung product da ton tai
+                if (list.size() >= 1) {
+                    for (final Custom_list_item c : list
+                    ) {
+                        if (c.getTitle().equals(pTemp.getProdName())) {
+                            final int index = list.indexOf(c);
+                            final int oldQ = Integer.parseInt(c.getSubTitle());
+                            final int newQ = oldQ + quantity;
 
-                                final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                                builder.setTitle("Exists");
-                                builder.setMessage(getString(R.string.neworder_product_dialog_message_existsproduct)
-                                        + "\nOld: " + oldQ + "\nNew: " + newQ);
+                            final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                            builder.setTitle("Exists");
+                            builder.setMessage(getString(R.string.neworder_product_dialog_message_existsproduct)
+                                    + "\nOld: " + oldQ + "\nNew: " + newQ);
 
-                                final int finalQuantity = quantity;
-                                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
+                            final int finalQuantity = quantity;
+                            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
 
-                                        list.get(index).setSubTitle(newQ + "");
-                                        customAdapterListView.notifyDataSetChanged();
+                                    list.get(index).setSubTitle(newQ + "");
+                                    customAdapterListView.notifyDataSetChanged();
 
-                                        // neu nhap 0
-                                        if (oldQ != Integer.parseInt(list.get(index).getSubTitle())) {
-                                            SetTotalMoney(pTemp.getUnitPrice() * finalQuantity);
-                                        }
-                                        //AddToOrderDetail(index);
+                                    // neu nhap 0
+                                    if (oldQ != Integer.parseInt(list.get(index).getSubTitle())) {
+                                        SetTotalMoney(pTemp.getUnitPrice() * finalQuantity);
                                     }
-                                });
-                                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                });
-                                builder.show();
-                                return;
-                            }
+                                    //AddToOrderDetail(index);
+                                }
+                            });
+                            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                            builder.show();
+                            return;
                         }
                     }
+                }
 
-                    Custom_list_item c = new Custom_list_item(pTemp.getProdName()
-                            , quantity + "", pTemp.getUnitPrice() + "");
-                    c.setTAG(pTemp.getProdID());
-                    list.add(c);
-                    customAdapterListView.notifyDataSetChanged();
-                    // change money
-                    SetTotalMoney(pTemp.getUnitPrice() * quantity);
-
-
+                Custom_list_item c = new Custom_list_item(pTemp.getProdName()
+                        , quantity + "", StringUtil.formatVnCurrence(context,pTemp.getUnitPrice() + ""));
+                c.setTAG(pTemp.getProdID());
+                list.add(c);
+                customAdapterListView.notifyDataSetChanged();
+                // change money
+                SetTotalMoney(pTemp.getUnitPrice() * quantity);
             }
-/*
-            private void AddToOrderDetail(int index) {
-                OrderDetail orderDetail = new OrderDetail("epic06", "Tphcm", "NV01001");
-                orderDetail.setOrderDetail(list.get(index).getTitle(),
-                                (double) Integer.parseInt(list.get(index).getSubTitle()), 15000);
-
-                NewOrderActivity.orderDetail.add(orderDetail);
-
-            }
-*/
         });
     }
 
@@ -292,7 +295,7 @@ public class NewOrderProduct extends Fragment {
                 b.setMessage(list.get(info.position).getTitle());
 
                 TextView tv = view.findViewById(R.id.txtCustomLayoutTextView);
-                tv.setText("UnitPrice");
+                tv.setText(R.string.neworder_product_inputTextLableQuantity);
 
                 b.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
@@ -307,7 +310,7 @@ public class NewOrderProduct extends Fragment {
                                 EditText edt = view.findViewById(R.id.edtCustomLayoutEditText);
 
                                 int quan = Integer.parseInt(list.get(info.position).getSubTitle());
-                                double unit = Double.parseDouble(list.get(info.position).getText());
+                                double unit = StringUtil.parseDoubleFromCurrence(list.get(info.position).getText());
                                 SetTotalMoney(quan*unit*(-1));
 
                                 list.get(info.position).setSubTitle(edt.getText().toString() + "");
@@ -326,7 +329,7 @@ public class NewOrderProduct extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         int quan = Integer.parseInt(list.get(info.position).getSubTitle());
-                        double unit = Double.parseDouble(list.get(info.position).getText());
+                        double unit = StringUtil.parseDoubleFromCurrence(list.get(info.position).getText());
                         SetTotalMoney(quan*unit*(-1));
 
                         list.remove(info.position);
@@ -355,6 +358,7 @@ public class NewOrderProduct extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         totalMoney = 0;
+        editTextQuantity.setText("");
     }
 }
 

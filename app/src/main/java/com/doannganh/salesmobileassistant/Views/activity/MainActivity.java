@@ -26,23 +26,34 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.doannganh.salesmobileassistant.Presenter.CustomerPresenter;
+import com.doannganh.salesmobileassistant.Presenter.ImagesPresenter;
+import com.doannganh.salesmobileassistant.Presenter.OrderDetailPresenter;
+import com.doannganh.salesmobileassistant.Presenter.OrderPresenter;
 import com.doannganh.salesmobileassistant.Presenter.ProductInSitePresenter;
 import com.doannganh.salesmobileassistant.Presenter.ProductPresenter;
+import com.doannganh.salesmobileassistant.Presenter.RoutePlanPresenter;
 import com.doannganh.salesmobileassistant.R;
 import com.doannganh.salesmobileassistant.TestActivity;
 import com.doannganh.salesmobileassistant.Views.MainIconFunction;
 import com.doannganh.salesmobileassistant.Views.adapter.CustomAdapterGridView;
-import com.doannganh.salesmobileassistant.Views.util.LanguageChange;
+import com.doannganh.salesmobileassistant.util.PermissionUtil;
+import com.doannganh.salesmobileassistant.util.ImageUtil;
+import com.doannganh.salesmobileassistant.util.LanguageChange;
 import com.doannganh.salesmobileassistant.model.Account;
 import com.doannganh.salesmobileassistant.model.Custom_grid_item;
 import com.doannganh.salesmobileassistant.model.Customer;
+import com.doannganh.salesmobileassistant.model.ImagesDB;
+import com.doannganh.salesmobileassistant.model.Order;
+import com.doannganh.salesmobileassistant.model.OrderDetail;
 import com.doannganh.salesmobileassistant.model.Product;
 import com.doannganh.salesmobileassistant.model.ProductInSite;
+import com.doannganh.salesmobileassistant.model.RoutePlan;
 
 
 import java.text.SimpleDateFormat;
@@ -125,21 +136,50 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void LoadViewFlipper() {
-        int gallery_grid_Images[]={R.drawable.welcom, R.drawable.client};
+        final ImagesPresenter imagesPresenter = ImagesPresenter.Instance(getApplicationContext());
         // load img and name
-        listAds = new ArrayList<>();
-        //listAds.add("https://acecookvietnam.vn/wp-content/uploads/2019/09/KV_Resize-100x50.jpg");
-        //listAds.add("https://acecookvietnam.vn/wp-content/uploads/2019/10/Acecook_KV_Yellow_RGB_FA-edit-1440X550-100x50.jpg");
-        //listAds.add("https://acecookvietnam.vn/wp-content/uploads/2019/07/BANER-WEB-1440-x-550px_BRAND-GAO-KM_MY-TAM-100x50.jpg");
-        listAds.add("https://acecookvietnam.vn/wp-content/uploads/2017/08/BANNER-MI-LAU-THAI-1440x550.png");
-        listAds.add("http://kenh14cdn.com/crop/640_360/2018/2018-photo-1-1546082632100785856682-250-53-1396-1886-crop-1546083078181-636817334373248437.jpg");
-        listAds.add("https://acecookvietnam.vn/wp-content/uploads/2019/04/KEV_9394.jpg");
-        listAds.add("https://acecookvietnam.vn/wp-content/uploads/2017/08/BANNER-MI-DE-NHAT-1440x550.png");
-        for(int i =0; i<listAds.size(); i++){
-            ImageView imageView = new ImageView(getApplicationContext());
-            Glide.with(getApplicationContext()).load(listAds.get(i)).into(imageView);
-            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-            viewFlipper.addView(imageView);
+        if(PermissionUtil.haveNetworkConnection(getApplicationContext())) {
+            listAds = new ArrayList<>();
+            listAds.add("https://acecookvietnam.vn/wp-content/uploads/2017/08/BANNER-MI-LAU-THAI-1440x550.png");
+            listAds.add("http://kenh14cdn.com/crop/640_360/2018/2018-photo-1-1546082632100785856682-250-53-1396-1886-crop-1546083078181-636817334373248437.jpg");
+            listAds.add("https://acecookvietnam.vn/wp-content/uploads/2019/04/KEV_9394.jpg");
+            listAds.add("https://acecookvietnam.vn/wp-content/uploads/2017/08/BANNER-MI-DE-NHAT-1440x550.png");
+
+            for (int i = 0; i < listAds.size(); i++) {
+                final ImageView imageView = new ImageView(getApplicationContext()); // storage img
+                // for save
+                int indexStart = listAds.get(i).lastIndexOf("/");
+                final String namePic = listAds.get(i).substring(indexStart + 1);
+
+                Glide.with(getApplicationContext())
+                        .load(listAds.get(i))
+                        .asBitmap()
+                        .into(new SimpleTarget<Bitmap>(100, 100) {
+                            @Override
+                            public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
+                                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                                imageView.setImageBitmap(resource);
+                                viewFlipper.addView(imageView);
+
+                                //save image to db
+                                imagesPresenter.saveImageToDB(new ImagesDB(account.getCompany()
+                                        , ImagesPresenter.KEY_IMAGES_HEADER_MAIN
+                                        , namePic
+                                        , ImageUtil.getBytes(resource)));
+                            }
+                        });
+
+            }
+        } else {
+            // get from db
+            List<ImagesDB> imageList = imagesPresenter.getImagesFromDB(
+                    account.getCompany(), ImagesPresenter.KEY_IMAGES_HEADER_MAIN);
+            for (ImagesDB img : imageList) {
+                ImageView imageView = new ImageView(getApplicationContext()); // storage img
+                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                imageView.setImageBitmap(ImageUtil.getImage(img.getImageData()));
+                viewFlipper.addView(imageView);
+            }
         }
 
         viewFlipper.setFlipInterval(5000);// chay trong 5s
@@ -400,19 +440,52 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected Void doInBackground(Void... voids) {
-            try {
-                customerPresenter = CustomerPresenter.Instance(getApplicationContext());
-                listCustomer = customerPresenter.GetListCustomer(account.getEmplID());
+            customerPresenter = CustomerPresenter.Instance(getApplicationContext());
+            ProductPresenter productPresenter = ProductPresenter.Instance(getApplicationContext());//get list product name from db
+            ProductInSitePresenter p = ProductInSitePresenter.Instance(getApplicationContext());
+            OrderPresenter orderPresenter = OrderPresenter.Instance(getApplicationContext());
+            OrderDetailPresenter orderDetailPresenter = OrderDetailPresenter.Instance(getApplicationContext());
+            RoutePlanPresenter routePlanPresenter = RoutePlanPresenter.Instance(getApplicationContext());
 
-                ProductPresenter productPresenter = ProductPresenter.Instance(getApplicationContext());//get list product name from db
-                listProductSource = productPresenter.GetListProduct();
+            if(PermissionUtil.haveNetworkConnection(getApplicationContext())) {
+                try {
+                    listCustomer = customerPresenter.GetListCustomer(account.getEmplID());
 
-                ProductInSitePresenter p = ProductInSitePresenter.Instance(getApplicationContext());
-                listProductInSite = p.getListProductInSite();
-            } catch (Exception e) {
-                Toast.makeText(MainActivity.this, "Error when get customer", Toast.LENGTH_LONG).show();
-                Log.d("LLLMainActGetInit", e.getMessage());
-                onBackPressed();
+                    listProductSource = productPresenter.GetListProduct();
+
+                    listProductInSite = p.getListProductInSite();
+
+                    List<Order> listOrder = orderPresenter.getListOrderFromAPI(account.getEmplID());
+
+                    if(listOrder != null) {
+                        for (Order o : listOrder) {
+                            orderPresenter.saveOrderToDB(o);
+
+                            List<OrderDetail> listOrderDetail = orderDetailPresenter.getListOrderDetail(o.getMyOrderID());
+                            orderDetailPresenter.saveListOrderDetailToDB(listOrderDetail);
+                        }
+                    }
+
+                    List<RoutePlan> routePlanList = routePlanPresenter.getListRoutePlan(account.getEmplID());
+                    if(routePlanList != null) {
+                        for (RoutePlan r : routePlanList)
+                            routePlanPresenter.saveRoutePlanToDB(r);
+                    }
+
+                    // save db
+                    customerPresenter.saveCustomerToDB(listCustomer);
+                    productPresenter.saveProductToDB(listProductSource);
+                    p.saveProductInSiteToDB(listProductInSite);
+                } catch (Exception e) {
+                    Log.d("LLLMainActGetInit", e.getMessage());
+                    onBackPressed();
+                }
+            } else {
+                listCustomer = customerPresenter.getListCustomerFromDB(account.getEmplID());
+
+                listProductSource = productPresenter.getListProductFromDB(account.getCompany());
+
+                listProductInSite = p.getListProductInSiteFromDB();
             }
 
             return null;

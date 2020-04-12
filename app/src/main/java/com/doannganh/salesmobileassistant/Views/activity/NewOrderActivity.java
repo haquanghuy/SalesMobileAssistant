@@ -30,11 +30,14 @@ import com.doannganh.salesmobileassistant.Views.fragment.NewOrderCustomer;
 import com.doannganh.salesmobileassistant.Views.fragment.NewOrderProduct;
 import com.doannganh.salesmobileassistant.R;
 import com.doannganh.salesmobileassistant.Views.fragment.NewOrderTotalAmt;
-import com.doannganh.salesmobileassistant.Views.util.CheckConnection;
+import com.doannganh.salesmobileassistant.util.PermissionUtil;
 import com.doannganh.salesmobileassistant.model.Customer;
 import com.doannganh.salesmobileassistant.model.Order;
 import com.doannganh.salesmobileassistant.model.OrderDetail;
 import com.doannganh.salesmobileassistant.model.ProductInSite;
+import com.doannganh.salesmobileassistant.model.RoutePlan;
+import com.doannganh.salesmobileassistant.util.ConstantUtil;
+import com.doannganh.salesmobileassistant.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,7 +61,6 @@ public class NewOrderActivity extends AppCompatActivity implements InterfaceRetu
     boolean isSync;
 
     public static String myOrderID;
-    public static double totalMoneyProduct;
     OrderDetailPresenter orderDetailPresenter;
     OrderPresenter orderPresenter;
 
@@ -76,7 +78,7 @@ public class NewOrderActivity extends AppCompatActivity implements InterfaceRetu
                 // Actions to do after 1 seconds
                 LoadMyOrderID();
             }
-        }, 1000);
+        }, 700);
 
         orderTemp = new OrderTemp();
         orderPresenter = OrderPresenter.Instance(getApplicationContext());
@@ -98,9 +100,8 @@ public class NewOrderActivity extends AppCompatActivity implements InterfaceRetu
     }
 
     private void LoadMyOrderID() {
-                AsyncTaskLoadActi asyncTaskLoadActi = new AsyncTaskLoadActi();
-                asyncTaskLoadActi.execute();
-
+        AsyncTaskLoadActi asyncTaskLoadActi = new AsyncTaskLoadActi();
+        asyncTaskLoadActi.execute();
     }
 
 
@@ -235,8 +236,6 @@ public class NewOrderActivity extends AppCompatActivity implements InterfaceRetu
                         customer = NewOrderCustomer.customer;
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("F3Customer", customer);
-                        totalMoneyProduct = NewOrderProduct.getTotalMoney();
-                        bundle.putDouble("TotalMoneyProduct", totalMoneyProduct);
                         fragmentThree.setArguments(bundle);
                         fragmentTransaction.replace(R.id.frameLayourNewOrder, fragmentThree, fragmentThree.getTAG());
                         fragmentTransaction.addToBackStack(fragmentThree.getTAG());
@@ -249,6 +248,7 @@ public class NewOrderActivity extends AppCompatActivity implements InterfaceRetu
                 break;
             default:
                 indexScreen = 1;
+                ChangeFragment(indexScreen);
                 return;
         }
         fragmentTransaction.commit();
@@ -277,30 +277,40 @@ public class NewOrderActivity extends AppCompatActivity implements InterfaceRetu
 
     public void saveOffline(View view) {
         if(orderShow != null){
-            if(orderShow.getOrderStatus() > 1) {
+            if(orderShow.getOrderStatus() != ConstantUtil.DB_ORDER_STATUS_PENDING) {
                 Toast.makeText(this, R.string.save_order_success, Toast.LENGTH_SHORT).show();
                 return;
             }
         }
-        //Toast.makeText(this, "Processing...", Toast.LENGTH_SHORT).show();
-        orderHead.setOrderStatus(1);
+
+        orderHead.setOrderStatus(ConstantUtil.DB_ORDER_STATUS_PENDING);
         if(isJob){
             orderHead.setRequestDate(datePlan);
         }
         long num = orderPresenter.saveOrderToDB(orderHead);
         if(num == 0)
-            Toast.makeText(this, R.string.save_order_error, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.save_order_view, Toast.LENGTH_SHORT).show();
         else{
             orderDetailPresenter = OrderDetailPresenter.Instance(getApplicationContext());
-            int numDt = orderDetailPresenter.saveListOrderDetailToDB(orderDetail);
-            Toast.makeText(this, R.string.save_order_success, Toast.LENGTH_SHORT).show();
-            //SetButtonBackgroundDefault(btnPrev);SetButtonBackgroundDefault(btnNext);
+            long numDt = orderDetailPresenter.saveListOrderDetailToDB(orderDetail);
+            if(numDt == ConstantUtil.DB_CRUD_RESPONSE_ERROR)
+                Toast.makeText(this, R.string.save_order_error, Toast.LENGTH_LONG).show();
+            else {
+                Toast.makeText(this, R.string.save_order_success, Toast.LENGTH_SHORT).show();
 
-            while (fragmentManager.getBackStackEntryCount() != 0){
-                fragmentManager.popBackStackImmediate();
+                if(isJob){
+                    Intent returnIntent = new Intent(NewOrderActivity.this, RoutePlanActivity.class);
+                    returnIntent.putExtra("isFinish", RoutePlan.VISITOFFLINE);
+                    setResult(Activity.RESULT_OK, returnIntent);
+                    finish();
+                    return;
+                }
+                while (fragmentManager.getBackStackEntryCount() != 0){
+                    fragmentManager.popBackStackImmediate();
+                }
+                finish();
             }
-            //startActivity(new Intent(NewOrderActivity.this, OrdersActivity.class));
-            Exit();
+
         }
     }
 
@@ -324,7 +334,14 @@ public class NewOrderActivity extends AppCompatActivity implements InterfaceRetu
             @Override
             public void onClick(View v) {
                 if (indexScreen != 3) {
-                    if(NewOrderCustomer.customer==null){
+                    if(indexScreen==2){
+                        if(NewOrderProduct.getTotalMoney() < 1){
+                            Toast.makeText(NewOrderActivity.this
+                                    , R.string.neworder_product_pleaseChooswProduct, Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    }
+                    if (NewOrderCustomer.customer == null) {
                         Toast.makeText(NewOrderActivity.this, R.string.neworder_customer_nocustomer
                                 , Toast.LENGTH_LONG).show();
                         return;
@@ -333,7 +350,6 @@ public class NewOrderActivity extends AppCompatActivity implements InterfaceRetu
                     ChangeFragment(indexScreen);
                     CheckEnableButtonPrev();
                 } else if (indexScreen == 3) {
-
                     AsyncTaskPostJSONArray asyncTaskPostJSONArray = new AsyncTaskPostJSONArray();
                     asyncTaskPostJSONArray.execute();
                 }
@@ -364,7 +380,7 @@ public class NewOrderActivity extends AppCompatActivity implements InterfaceRetu
                     }
                 });
                 builder.show();
-            }else {
+            } else {
                 //Intent intent = new Intent(NewOrderActivity.this, OrdersActivity.class);
                 //startActivity(intent);
                 Exit();
@@ -380,7 +396,6 @@ public class NewOrderActivity extends AppCompatActivity implements InterfaceRetu
     @Override
     public void returnEvent(@Nullable int id, int positionSelect) {
         SetCustomerSelect(id, positionSelect);
-
     }
 
     private void SetCustomerSelect(int id, int positionSelect) {
@@ -412,14 +427,13 @@ public class NewOrderActivity extends AppCompatActivity implements InterfaceRetu
                 }
             }
 
-
         }
         //customerID = MainActivity.listCustomer.get(positionSelect).getCustID();
         //customerName = MainActivity.listCustomer.get(positionSelect).getCustName();
 
     }
 
-    public class AsyncTaskPostJSONArray extends AsyncTask<Void, Void, List<Boolean>> {
+    private class AsyncTaskPostJSONArray extends AsyncTask<Void, Void, List<Boolean>> {
 
         private ProgressDialog progressDialog;
         String mess = "";
@@ -436,15 +450,21 @@ public class NewOrderActivity extends AppCompatActivity implements InterfaceRetu
             List<Boolean> listRe = new ArrayList<>();
 
             if(orderShow != null)
-                if(orderShow.getOrderStatus()>1){
+                if(orderShow.getOrderStatus() != ConstantUtil.DB_ORDER_STATUS_PENDING){
                     mess = getString(R.string.post_json_exists);
                     return null;
                 }
 
-            if (CheckConnection.haveNetworkConnection(getApplicationContext())) {
+            if(StringUtil.isNullOrEmpty(orderHead.getRequestDate()) && isJob){
+                orderHead.setRequestDate(datePlan);
+            }
+
+            if(StringUtil.isNullOrEmpty(orderHead.getRequestDate()))
+                orderHead.setRequestDate(orderShow.getRequestDate());
+
+            if (PermissionUtil.haveNetworkConnection(getApplicationContext())) {
                 HashMap hashMap = new HashMap();
                 List<HashMap> listHashMap = new ArrayList<>();
-                orderHead.setRequestDate("");
 
                 // order head
                 hashMap.put(Order.COMPID, orderHead.getCompID());
@@ -455,7 +475,7 @@ public class NewOrderActivity extends AppCompatActivity implements InterfaceRetu
                 hashMap.put(Order.ORDERDATE, orderHead.getOrderDate());
                 hashMap.put(Order.NEEDBYDATE, orderHead.getNeedByDate());
                 hashMap.put(Order.REQUESTDATE, orderHead.getRequestDate());
-                hashMap.put(Order.ORDERSTATUS, 2);
+                hashMap.put(Order.ORDERSTATUS, ConstantUtil.DB_ORDER_STATUS_VERIFYING);
 
 
                 // order detail
@@ -480,7 +500,7 @@ public class NewOrderActivity extends AppCompatActivity implements InterfaceRetu
                 if (!isPostOrder) return listRe;
 
                 orderDetailPresenter = OrderDetailPresenter.Instance(getApplicationContext());
-                boolean isPostOrderDetail = orderDetailPresenter.PostOrder(listHashMap);
+                boolean isPostOrderDetail = orderDetailPresenter.postNewOrderDetail(listHashMap);
 
                 listRe.add(isPostOrderDetail);
                 return listRe;
@@ -505,7 +525,7 @@ public class NewOrderActivity extends AppCompatActivity implements InterfaceRetu
 
                 if(isJob){
                     Intent returnIntent = new Intent(NewOrderActivity.this, RoutePlanActivity.class);
-                    returnIntent.putExtra("isFinish",true);
+                    returnIntent.putExtra("isFinish",RoutePlan.VISITED);
                     setResult(Activity.RESULT_OK, returnIntent);
                     finish();
                     return;
@@ -518,13 +538,14 @@ public class NewOrderActivity extends AppCompatActivity implements InterfaceRetu
                         , Toast.LENGTH_LONG).show();
                 // delete order
                 orderPresenter.deleteOrderFromAPI(orderHead.getMyOrderID());
+                orderPresenter.deleteOrderFromDB(orderHead);
             }
 
 
         }
     }
 
-    public class AsyncTaskLoadActi extends AsyncTask<Void, Void, String> {
+    private class AsyncTaskLoadActi extends AsyncTask<Void, Void, String> {
 
         private ProgressDialog progressDialog;
 
@@ -537,27 +558,30 @@ public class NewOrderActivity extends AppCompatActivity implements InterfaceRetu
 
         @Override
         protected String doInBackground(Void... booleans) {
-
             // get dtail
-                if (orderShow != null) {
-                    orderDetailPresenter = OrderDetailPresenter.Instance(getApplicationContext());
+            if (orderShow != null) {
+                orderDetailPresenter = OrderDetailPresenter.Instance(getApplicationContext());
 
-                    if (isSync) {
-                        orderDetailShow = orderDetailPresenter.getListOrderDetailFromDB(orderShow.getCompID(),
-                                orderShow.getMyOrderID());
-                    } else {
-                        orderDetailShow = orderDetailPresenter.getListOrder(orderShow.getMyOrderID());
-                    }
-                    myOrderID = orderShow.getMyOrderID();
-                    return myOrderID;
+                if (isSync) {
+                    orderDetailShow = orderDetailPresenter.getListOrderDetailFromDB(orderShow.getCompID(),
+                            orderShow.getMyOrderID());
+                } else {
+                    if(PermissionUtil.haveNetworkConnection(getApplicationContext()))
+                        orderDetailShow = orderDetailPresenter.getListOrderDetail(orderShow.getMyOrderID());
+                    else orderDetailShow = orderDetailPresenter.getListOrderDetailFromDB(orderShow.getCompID()
+                            , orderShow.getMyOrderID());
                 }
-            myOrderID = orderPresenter.getOrderIDCurrent(MainActivity.account.getEmplID());
-            return myOrderID;
+                myOrderID = orderShow.getMyOrderID();
+                return myOrderID;
+            }
+            return orderPresenter.getOrderIDCurrent(MainActivity.account.getEmplID());
         }
 
         @Override
         protected void onPostExecute(String s) {
             progressDialog.dismiss();
+
+            myOrderID = s;
 
             if(myOrderID != null){
                 ChangeFragment(indexScreen);
@@ -567,7 +591,7 @@ public class NewOrderActivity extends AppCompatActivity implements InterfaceRetu
         }
     }
 
-    public class AsyncTaskLoadQuantity extends AsyncTask<String, Void, Integer> {
+    private class AsyncTaskLoadQuantity extends AsyncTask<String, Void, Integer> {
 
         private ProgressDialog progressDialog;
 
@@ -637,6 +661,12 @@ public class NewOrderActivity extends AppCompatActivity implements InterfaceRetu
     @Override
     public void onDestroy() {
         super.onDestroy();
+        clearStack();
+        // set null to NewOrderProduct
+        NewOrderProduct.textView = null;
+        NewOrderProduct.positionProductTemp = -1;
+        NewOrderProduct.quantityProductChoose = 0;
+
         orderShow = null;
         btnNext.getBackground().clearColorFilter();
         Runtime.getRuntime().gc();      //This is the key

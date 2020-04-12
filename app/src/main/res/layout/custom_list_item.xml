@@ -1,42 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_weight="7"
+<LinearLayout android:layout_weight="10"
     android:orientation="horizontal"
     android:padding="@dimen/public_padding"
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-    <LinearLayout android:layout_weight="4"
-        android:orientation="vertical"
-        android:layout_width="wrap_content"
+    <LinearLayout android:layout_weight="8"
+        android:orientation="horizontal"
+        android:layout_width="0dp"
         android:layout_height="wrap_content">
-        <TextView
-            android:text="This is tile of item"
-            android:textSize="19sp"
-            android:textStyle="bold"
-            android:id="@+id/txtCustomListItemTitle"
-            android:layout_marginRight="5dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        <TextView
-            android:text="This is subtitle"
-            android:id="@+id/txtCustomListItemSub"
+
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="match_parent">
+
+            <TextView
+                android:text="This is tile of item"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:id="@+id/txtCustomListItemTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:text="This is subtitle"
+                android:id="@+id/txtCustomListItemSub"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
     </LinearLayout>
 
     <TextView
+        android:layout_gravity="right"
         android:textSize="14sp"
         android:id="@+id/txtCustomListItemText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="This is text" />
 
-    <ImageView
-        android:src="@drawable/ic_stat_name"
-        android:layout_marginTop="15dp"
-        android:layout_marginRight="7dp"
-        android:textSize="18sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:gravity="right"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:src="@drawable/ic_stat_name"
+            android:layout_gravity="center_vertical"
+            android:textSize="18sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
 
 </LinearLayout>

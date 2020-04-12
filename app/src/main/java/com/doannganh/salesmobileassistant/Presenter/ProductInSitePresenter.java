@@ -31,4 +31,23 @@ public class ProductInSitePresenter {
     public List<ProductInSite> getListProductInSite(){
         return productDAO.getListProductInSite();
     }
+
+    public List<ProductInSite> getListProductInSiteFromDB(){
+        return productDAO.getListProductInSiteFromDB();
+    }
+
+    public long saveProductInSiteToDB(List<ProductInSite> products){
+        long num = 0;
+        try {
+            for(ProductInSite product : products)
+                num += productDAO.saveProductInSiteToDB(product);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+        finally {
+            return num;
+        }
+    }
+
 }

@@ -27,4 +27,12 @@ public class EmployeePresenter {
     public Employee getEmployee(String id){
         return employeeDAO.getEmployee(id);
     }
+
+    public Employee getEmployeeFromDB(String id){
+        return employeeDAO.getEmployeeFromDB(id);
+    }
+
+    public long saveEmployeeToDB(Employee employee){
+        return employeeDAO.saveEmployeeToDB(employee);
+    }
 }

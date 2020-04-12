@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.doannganh.salesmobileassistant.Manager.DAO.CustomerDAO;
 import com.doannganh.salesmobileassistant.model.Customer;
+import com.doannganh.salesmobileassistant.model.Product;
 
 import java.util.List;
 
@@ -33,6 +34,29 @@ public class CustomerPresenter {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public List<Customer> getListCustomerFromDB(String employID){
+        try {
+            return customerDAO.getListCustomersFromDB(employID);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public long saveCustomerToDB(List<Customer> products){
+        long num = 0;
+        try {
+            for(Customer product : products)
+                num += customerDAO.saveCustomerToDB(product);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+        finally {
+            return num;
         }
     }
 }

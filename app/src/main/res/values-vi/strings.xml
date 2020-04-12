@@ -51,7 +51,7 @@
     <string name="neworder_view_tag_posted">(Đã gửi)</string>
     <string name="neworder_view_tag_verifying">(Đang xác thực)</string>
     <string name="orders_item0">Đơn hàng mới</string>
-    <string name="orders_item1">Tất cả đơn hàng</string>
+    <string name="orders_item1">Tất cả đơn hàng đã đăng</string>
     <string name="orders_item2">Đơn hàng chưa được đồng bộ</string>
     <string name="orders_item3">Thống kê</string>
     <string name="orders_tag">Đơn hàng</string>
@@ -67,7 +67,6 @@
     <string name="setting_tag">Cài đặt</string>
     <string name="syncorder_tag">Đồng bộ đơn hàng</string>
     <string name="routeplan_tag">Công việc</string>
-    <string name="listorder_list_lastmonth">Tháng trước</string>
     <string name="listorder_list_other">Tùy chọn</string>
     <string name="listorder_list_thismonth">Tháng này</string>
     <string name="navi_func2">Thống kê</string>
@@ -104,4 +103,24 @@
     <string name="login_reset_api_message">"Cấu hình API trước đó của bạn sẽ bị mất. Bạn có chắc ? Nếu ứng dụng không tắt, bạn hãy tắt hoàn toàn nó. "</string>
     <string name="setting_update_no">Phiên bản của bạn đã là mới nhất</string>
     <string name="setting_lang_vi">Tiếng Việt</string>
+    <string name="routeplan_option_all">Hiển thị tất cả</string>
+    <string name="routeplan_option_justNew">Chưa làm</string>
+    <string name="neworder_product_pleaseChooswProduct">Bạn cần chọn ít nhất 1 sản phẩm.</string>
+    <string name="dialog_listorder_mess_delete_orderjob1">Đơn hàng này đang được lưu tạm và chưa được hệ thống ghi nhận.</string>
+    <string name="dialog_listorder_mess_delete_orderjob2">Xóa đơn hàng này đồng nghĩa với việc bạn sẽ phải làm lại công việc dưới đây:</string>
+    <string name="neworder_product_inputTextLableQuantity">Số lượng :</string>
+    <string name="routeplan_numOfJob">Số công việc cần thực hiện:</string>
+    <string name="listorder_no_order">Bạn không có đơn hàng nào</string>
+    <string name="save_order_view">Đơn hàng này chỉ có thể được xem hoặc gửi lên trung tâm</string>
+    <string name="setting_lang_en">English</string>
+    <string name="welcom_title">CONFIGURATION API PATH</string>
+    <string name="routeplan_no_job">Bạn không có việc làm nào</string>
+    <string name="listorder_list_thisweek">Tuần này</string>
+    <string name="maprouteplan_nopermission">Cần cho phép quyền để tải bản đồ</string>
+    <string name="maprouteplan_tag">Map</string>
+    <string name="maprouteplan_needpermission_message">Ứng dụng cần quyền truy cập vị trí của bạn để xác định vị trí người dùng trên bản đồ. Cấp quyền ngay !</string>
+    <string name="maprouteplan_needpermission_title">Cần cấp quyền</string>
+    <string name="maprouteplan_findpath">Chỉ đường</string>
+    <string name="maprouteplan_menu_createorder">Bắt đầu tạo đơn hàng</string>
+    <string name="maprouteplan_text_showGPS">Hãy bật GPS để hiển thị tốt nhất. <u>Bật ngay !</u></string>
 </resources>

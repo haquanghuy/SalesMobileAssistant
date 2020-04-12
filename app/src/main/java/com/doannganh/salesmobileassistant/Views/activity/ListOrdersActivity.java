@@ -24,12 +24,17 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.doannganh.salesmobileassistant.Presenter.OrderDetailPresenter;
 import com.doannganh.salesmobileassistant.Presenter.OrderPresenter;
+import com.doannganh.salesmobileassistant.Presenter.RoutePlanPresenter;
 import com.doannganh.salesmobileassistant.R;
 import com.doannganh.salesmobileassistant.Views.Interface.InterfaceReturnEventListerner;
 import com.doannganh.salesmobileassistant.Views.customView.CustomDialogWithListRadio;
-import com.doannganh.salesmobileassistant.Views.util.UtilFilter;
-import com.doannganh.salesmobileassistant.Views.util.UtilMethod;
+import com.doannganh.salesmobileassistant.Views.customView.CustomDialogWithRecyclerView;
+import com.doannganh.salesmobileassistant.util.PermissionUtil;
+import com.doannganh.salesmobileassistant.util.MyDate;
+import com.doannganh.salesmobileassistant.util.UtilFilter;
+import com.doannganh.salesmobileassistant.util.UtilMethod;
 import com.doannganh.salesmobileassistant.model.Custom_list_item;
 
 import java.util.ArrayList;
@@ -38,18 +43,22 @@ import java.util.List;
 
 import com.doannganh.salesmobileassistant.Views.adapter.CustomAdapterListView;
 import com.doannganh.salesmobileassistant.model.Customer;
+import com.doannganh.salesmobileassistant.model.MyJob;
 import com.doannganh.salesmobileassistant.model.Order;
+import com.doannganh.salesmobileassistant.model.RoutePlan;
+import com.doannganh.salesmobileassistant.util.ConstantUtil;
+import com.doannganh.salesmobileassistant.util.StringUtil;
 
 public class ListOrdersActivity extends AppCompatActivity implements InterfaceReturnEventListerner {
 
     ListView listView;
-    Button btnMonth;
+    Button btnMonth, btnOK;
     EditText edtMonth;
     EditText edtYear;
     TextView txtSyncNum, txtTotalNum;
 
-    ArrayList<Custom_list_item> list;
-    ArrayList<String> listMonth;
+    List<Custom_list_item> list;
+    List<String> listMonth;
     CustomAdapterListView customAdapterListView;
     boolean isSync;
     List<Order> listOrderSource, listOrderDB;
@@ -69,7 +78,31 @@ public class ListOrdersActivity extends AppCompatActivity implements InterfaceRe
 
         EventClickSelectMonth();
 
+        EventClickBtnOK();
+
         registerForContextMenu(this.listView);
+    }
+
+    private void EventClickBtnOK() {
+        btnOK.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<Custom_list_item> l = filterOrderByCustom(list, isSync?listOrderDB:listOrderSource);
+
+                if(l == null || l.size() < 1){
+                    listView.setVisibility(View.GONE);
+                    findViewById(R.id.txtEmplty).setVisibility(View.VISIBLE);
+                    txtTotalNum.setText(getString(R.string.listorder_total) + " " + 0);
+                    txtSyncNum.setText(getString(R.string.listorder_total) + " " + 0);
+                }
+                else {
+                    listView.setVisibility(View.VISIBLE);
+                    findViewById(R.id.txtEmplty).setVisibility(View.GONE);
+                    customAdapterListView.changeListSourceOnce(l);
+                    CheckListViewEmpty();
+                }
+            }
+        });
     }
 
     private void LoadListOrder() {
@@ -88,18 +121,21 @@ public class ListOrdersActivity extends AppCompatActivity implements InterfaceRe
     }
 
     private void LoadInfoHeader() {
-
         // info
         LoadValueCountHeader();
     }
 
     private void LoadValueCountHeader() {
-        txtTotalNum.setText(getString(R.string.listorder_total)+": " + list.size());
-
         int count = 0;
-        for (Custom_list_item c : list){
-            if(c.getText().equals("Pending"))
-                count++;
+        if(list == null || list.size() < 1) {
+            txtTotalNum.setText(getString(R.string.listorder_total) + " " + count);
+        } else {
+            txtTotalNum.setText(getString(R.string.listorder_total) + " " + list.size());
+
+            for (Custom_list_item c : list) {
+                if (c.getText().equals("Pending"))
+                    count++;
+            }
         }
         txtSyncNum.setText(getString(R.string.listorder_notsynced) + " " + count);
     }
@@ -121,14 +157,14 @@ public class ListOrdersActivity extends AppCompatActivity implements InterfaceRe
         edtMonth.setEnabled(b);
         edtYear.setEnabled(b);
         if(b)
-            findViewById(R.id.btnOrderListOK).setVisibility(View.VISIBLE);
-        else findViewById(R.id.btnOrderListOK).setVisibility(View.INVISIBLE);
+            btnOK.setVisibility(View.VISIBLE);
+        else btnOK.setVisibility(View.INVISIBLE);
     }
 
     private void LoadSpinner() {
         listMonth = new ArrayList<>();
+        listMonth.add(getString(R.string.listorder_list_thisweek));
         listMonth.add(getString(R.string.listorder_list_thismonth));
-        listMonth.add(getString(R.string.listorder_list_lastmonth));
         listMonth.add(getString(R.string.listorder_list_other));
 
         returnEvent(btnMonth.getId(),0);
@@ -148,6 +184,7 @@ public class ListOrdersActivity extends AppCompatActivity implements InterfaceRe
         edtYear = (EditText) findViewById(R.id.edtSpinnerYear);
         txtSyncNum = findViewById(R.id.txtOrdersLisetOrderSyncNum);
         txtTotalNum = findViewById(R.id.txtOrdersLisetOrderTotalNum);
+        btnOK = findViewById(R.id.btnOrderListOK);
     }
 
     @Override
@@ -160,8 +197,6 @@ public class ListOrdersActivity extends AppCompatActivity implements InterfaceRe
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        //Department department = list.get(info.position);
-
         switch (item.getItemId()){
             case R.id.menuListOrderOpen:
                 OpenOrder(info.position);
@@ -174,14 +209,7 @@ public class ListOrdersActivity extends AppCompatActivity implements InterfaceRe
                     builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            boolean b = orderPresenter.deleteOrderFromDB(listOrderDB.get(info.position));
-                            if(b) {
-                                list.remove(info.position);
-                                customAdapterListView.notifyDataSetChanged();
-                                LoadValueCountHeader();
-                                Toast.makeText(ListOrdersActivity.this, R.string.listorder_delete_success
-                                        , Toast.LENGTH_SHORT).show();
-                            }
+                            deleteOrder(info);
                         }
                     });
                     builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -200,6 +228,60 @@ public class ListOrdersActivity extends AppCompatActivity implements InterfaceRe
         return true;
     }
 
+    private void deleteOrder(final AdapterView.AdapterContextMenuInfo info) {
+        Order o = listOrderDB.get(info.position);
+        if(!StringUtil.isNullOrEmpty(o.getRequestDate())){
+            final List<MyJob> l = RoutePlanPresenter.Instance(ListOrdersActivity.this).getListMyJob(
+                    MainActivity.listCustomer, o.getEmplID(), o.getCustID(), o.getRequestDate());
+            CustomDialogWithRecyclerView custom = new CustomDialogWithRecyclerView(
+                    this, l, new CustomDialogWithRecyclerView.ReturnValueListerner() {
+                @Override
+                public void OnTouchNegativeButton() {
+
+                }
+
+                @Override
+                public void OnTouchPositiveButton() {
+                    execDeleteOrder(info, l);
+                    CheckListViewEmpty();
+                }
+            });
+            custom.show();
+        } else {
+            execDeleteOrder(info, null);
+            CheckListViewEmpty();
+        }
+
+    }
+
+    private void execDeleteOrder(final AdapterView.AdapterContextMenuInfo info, @Nullable List<MyJob> l){
+        boolean b = OrderDetailPresenter.Instance(getApplicationContext()).deleteOrderDetailFromDB(
+                listOrderDB.get(info.position).getCompID(),
+                listOrderDB.get(info.position).getMyOrderID()
+        );
+        if (b)
+            b = orderPresenter.deleteOrderFromDB(listOrderDB.get(info.position));
+        else
+            Toast.makeText(ListOrdersActivity.this, getString(R.string.listorder_delete_error), Toast.LENGTH_SHORT).show();
+        if(b) {
+            list.remove(info.position);
+            customAdapterListView.notifyDataSetChanged();
+            LoadValueCountHeader();
+
+            // set status job
+            if(l != null) {
+                RoutePlan routePlan = l.get(0).getRoutePlan();
+                RoutePlanPresenter routePlanPresenter = RoutePlanPresenter.Instance(getApplicationContext());
+                // save to db
+                routePlan.setVisited(RoutePlan.UNVISIT);
+                long num = routePlanPresenter.setRoutePlanToDB(routePlan);
+            }
+
+            Toast.makeText(ListOrdersActivity.this, R.string.listorder_delete_success
+                    , Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void OpenOrder(int position) {
         Intent intent = new Intent(ListOrdersActivity.this, NewOrderActivity.class);
 
@@ -214,6 +296,18 @@ public class ListOrdersActivity extends AppCompatActivity implements InterfaceRe
         intent.putExtra("listOrderBundle", bundle);
         startActivityForResult(intent, 0);
         finish();
+    }
+
+    private void CheckListViewEmpty(){
+        if(list == null || list.size() < 1){
+            listView.setVisibility(View.GONE);
+            findViewById(R.id.txtEmplty).setVisibility(View.VISIBLE);
+        } else {
+            findViewById(R.id.txtEmplty).setVisibility(View.GONE);
+            listView.setVisibility(View.VISIBLE);
+        }
+
+        LoadInfoHeader();
     }
 
     @Override
@@ -250,27 +344,23 @@ public class ListOrdersActivity extends AppCompatActivity implements InterfaceRe
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.menuListOrderAdd){
+        if (item.getItemId() == R.id.menuListOrderAdd) {
             startActivityForResult(new Intent(ListOrdersActivity.this, NewOrderActivity.class), 0);
             return true;
-        }else if(item.getItemId() ==  R.id.menuOrderListOrderRefresh){
+        } else if (item.getItemId() == R.id.menuOrderListOrderRefresh) {
+            if (!PermissionUtil.haveNetworkConnection(getApplicationContext()) && !isSync)
+                PermissionUtil.showToastNetworkError(getApplicationContext());
             LoadListOrder();
-                //Toast.makeText(this, "list size "+list.size(), Toast.LENGTH_SHORT).show();
-                //customAdapterListView
         }
-            return super.onOptionsItemSelected(item);
-    }
-
-    public void ClickButtonOK(View view) {
-
-        Toast.makeText(ListOrdersActivity.this, "Show order "+
-                edtMonth.getText().toString() + " " + edtYear.getText().toString(), Toast.LENGTH_SHORT).show();
-
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void returnEvent(@Nullable int id, int positionSelect) {
         if(id == btnMonth.getId()){
+            if(list != null)
+                customAdapterListView.resetListSource();
+            List<Custom_list_item> l = new ArrayList<>();
             btnMonth.setText(listMonth.get(positionSelect) + "");
 
             Calendar calendar = Calendar.getInstance();
@@ -279,21 +369,43 @@ public class ListOrdersActivity extends AppCompatActivity implements InterfaceRe
 
             switch (positionSelect){
                 case 0:
+                    // this week
                     edtMonth.setText(thisMonth + "");
                     edtYear.setText(thisYear + "");
 
                     ChangeStatusMonthYear(false);
+
+                    l = filterOrderInCurrent(list, isSync?listOrderDB:listOrderSource, 0);
+
                     break;
+
                 case 1:
-                    edtMonth.setText(thisMonth-1 + "");
+                    // this month
+                    edtMonth.setText(thisMonth + "");
                     edtYear.setText(thisYear + "");
 
                     ChangeStatusMonthYear(false);
+                    l = filterOrderInCurrent(list, isSync?listOrderDB:listOrderSource, 1);
                     break;
+
                 case 2:
                     ChangeStatusMonthYear(true);
                     break;
-                default: return;
+                default: l = null;
+
+            }
+
+            if(l == null || l.size() < 1){
+                listView.setVisibility(View.GONE);
+                findViewById(R.id.txtEmplty).setVisibility(View.VISIBLE);
+                txtTotalNum.setText(getString(R.string.listorder_total) + " " + 0);
+                txtSyncNum.setText(getString(R.string.listorder_total) + " " + 0);
+            }
+            else {
+                listView.setVisibility(View.VISIBLE);
+                findViewById(R.id.txtEmplty).setVisibility(View.GONE);
+                customAdapterListView.changeListSourceOnce(l);
+                CheckListViewEmpty();
             }
         }
 
@@ -321,11 +433,21 @@ public class ListOrdersActivity extends AppCompatActivity implements InterfaceRe
                 }
 
                 if(isSync){
-                    listOrderDB = orderPresenter.getListOrderFromDB();
+                    listOrderDB = orderPresenter.getListOrderFromDB(MainActivity.account.getEmplID()
+                        , new int[]{ConstantUtil.DB_ORDER_STATUS_PENDING});
                     return listOrderDB;
                 }
 
-                listOrderSource = orderPresenter.getListOrderFromAPI(MainActivity.account.getEmplID());
+                if (PermissionUtil.haveNetworkConnection(getApplicationContext())) {
+                    listOrderSource = orderPresenter.getListOrderFromAPI(MainActivity.account.getEmplID());
+                    // save db
+                    if(listOrderSource != null) {
+                        for (Order o : listOrderSource)
+                            orderPresenter.saveOrderToDB(o);
+                    }
+                }
+                else listOrderSource = orderPresenter.getListOrderFromDB(MainActivity.account.getEmplID()
+                        , new int[]{ConstantUtil.DB_ORDER_STATUS_VERIFYING, ConstantUtil.DB_ORDER_STATUS_COMPLETE});
                 return listOrderSource;
 
 
@@ -352,18 +474,19 @@ public class ListOrdersActivity extends AppCompatActivity implements InterfaceRe
                         list.add(new Custom_list_item(name, o.getMyOrderID(), UtilMethod.convertIdToStatus(o.getOrderStatus())));
                     }
 
-                    customAdapterListView = new CustomAdapterListView(ListOrdersActivity.this
-                            , R.layout.custom_list_item, list);
+                    customAdapterListView = new CustomAdapterListView(ListOrdersActivity.this, list);
                     customAdapterListView.setMyListTemp();
                     listView.setAdapter(customAdapterListView);
                     listView.setTextFilterEnabled(true);
-                    LoadInfoHeader();
 
                     EventClickList();
                 }
 
+                CheckListViewEmpty();
             }
             progressDialog.dismiss();
+
+            UtilMethod.hideKeyboardFrom(ListOrdersActivity.this);
         }
     }
 
@@ -374,5 +497,68 @@ public class ListOrdersActivity extends AppCompatActivity implements InterfaceRe
                 OpenOrder(position);
             }
         });
+    }
+
+
+    /**
+     * Filter list by week, month
+     * @param listUI: list root UI show
+     * @param list: list source
+     * @param weekOrMonth: 0:week, 1:month
+     * @return: list filtered
+     */
+    private List<Custom_list_item> filterOrderInCurrent(List<Custom_list_item> listUI, List<Order> list, int weekOrMonth){
+        List<Custom_list_item> re = new ArrayList<>();
+        MyDate myDate = new MyDate();
+        // filter by date
+        try {
+            String[] date;
+            if(weekOrMonth == 0)
+                date = myDate.getCurrentWeekDate(MyDate.WEEK_NOW);
+            else date = myDate.getCurrentMonthDate();
+            for (int i=0; i<list.size(); i++) {
+                boolean b = myDate.isIn(date, list.get(i).getOrderDate());
+
+                if(b){
+                    re.add(listUI.get(i));
+                }
+            }
+
+        } catch (Exception e) {
+            Log.d("LLLFilterOrderWeek", e.getMessage());
+        }
+
+        return re;
+    }
+
+    private List<Custom_list_item> filterOrderByCustom(List<Custom_list_item> listUI, List<Order> list){
+        int moth = 0;
+        int year = 0;
+        try {
+            moth = Integer.parseInt(edtMonth.getText().toString());
+            year = Integer.parseInt(edtYear.getText().toString());
+        } catch (Exception e){
+            Toast.makeText(this, "Month or year invalid", Toast.LENGTH_LONG).show();
+            return null;
+        }
+
+        List<Custom_list_item> re = new ArrayList<>();
+        MyDate myDate = new MyDate();
+        // filter by date
+        try {
+            String[] date = myDate.getCurrentMonthDate(moth, year);
+            for (int i=0; i<list.size(); i++) {
+                boolean b = myDate.isIn(date, list.get(i).getOrderDate());
+
+                if(b){
+                    re.add(listUI.get(i));
+                }
+            }
+
+        } catch (Exception e) {
+            Log.d("LLLFilterOrderWeek", e.getMessage());
+        }
+
+        return re;
     }
 }

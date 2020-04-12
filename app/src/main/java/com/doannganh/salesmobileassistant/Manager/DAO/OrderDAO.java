@@ -10,6 +10,7 @@ import android.util.Log;
 import com.doannganh.salesmobileassistant.Manager.ExecMethodHTTP;
 import com.doannganh.salesmobileassistant.Manager.Server;
 import com.doannganh.salesmobileassistant.model.Order;
+import com.doannganh.salesmobileassistant.util.ConstantUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -83,13 +84,13 @@ public class OrderDAO implements Serializable {
         }
         finally {
             db.endTransaction();
-            return (num>0);
+            return (num > 0);
         }
     }
 
     public long saveOrderToDB(Order order){
         db = salesMobileAssistant.getWritableDatabase();
-        long numberOfRows = 0;
+        long numberOfRows = ConstantUtil.DB_CRUD_RESPONSE_EMPTY;
         db.beginTransaction();
 
         // kiem tra ton tai
@@ -124,13 +125,15 @@ public class OrderDAO implements Serializable {
         }
         catch (SQLiteException ex){
             Log.d("LLL"+getTAG, ex.getMessage());
+            numberOfRows = ConstantUtil.DB_CRUD_RESPONSE_ERROR;
         }
         finally {
+            cKT.close();
             db.endTransaction();
+            db.close();
             return numberOfRows;
         }
     }
-
 
     public String getOrderIDCurrent(String emplpyID){
         String id1 = "Show id current";
@@ -139,18 +142,22 @@ public class OrderDAO implements Serializable {
         String id2 = getLastIDFromAPI(emplpyID);
         String id = FindIDLarge(id1, id2);
 
-        if (id == null) return emplpyID + "00001";
-        // tach 4 so cuoi thanh int
-        String numStr = id.substring(id.length()-5);
-        int num = Integer.parseInt(numStr);
-        // cong them 1 cho int
-        int numPlus = ++num;
-        String idPlus = numPlus + "";
-        // thay 4 so int cho 4 so cuoi
-        while (numStr.length() != idPlus.length()){
-            idPlus = "0" + idPlus;
+        try {
+            if (id == null) return emplpyID + "00001";
+            // tach 4 so cuoi thanh int
+            String numStr = id.substring(id.length() - 5);
+            int num = Integer.parseInt(numStr);
+            // cong them 1 cho int
+            int numPlus = ++num;
+            String idPlus = numPlus + "";
+            // thay 4 so int cho 4 so cuoi
+            while (numStr.length() != idPlus.length()) {
+                idPlus = "0" + idPlus;
+            }
+            return id.replace(numStr, idPlus);
+        } catch (Exception ex){
+            return null;
         }
-        return id.replace(numStr, idPlus);
     }
 
     private String FindIDLarge(String id1, String id2) {
@@ -197,6 +204,8 @@ public class OrderDAO implements Serializable {
 
     private String getLastIDFromDB(String emplpyID){
         db = salesMobileAssistant.getReadableDatabase();
+        String reString = null;
+
         String sql = "SELECT * " + " FROM " + salesMobileAssistant.TB_ORDERS
                 + " WHERE " + salesMobileAssistant.TB_ORDER_EMPLOYEEID + " = '" + emplpyID + "'"
                 + " ORDER BY " + salesMobileAssistant.TB_ORDER_MYORDERID + " DESC LIMIT 1";
@@ -205,51 +214,74 @@ public class OrderDAO implements Serializable {
             if (cursor.getCount() != 0){
                 cursor.moveToPosition(-1);
                 while (cursor.moveToNext()){
-                    return cursor.getString(cursor.getColumnIndexOrThrow(salesMobileAssistant.TB_ORDER_MYORDERID));
+                    reString = cursor.getString(cursor.getColumnIndexOrThrow(salesMobileAssistant.TB_ORDER_MYORDERID));
                 }
             }
+            cursor.close();
         }catch (Exception e){
             Log.d("LLLUtilGetLastID", e.getMessage());
         }
-        return null;
+        finally {
+            db.close();
+            return reString;
+        }
     }
 
-    public List<Order> getListOrderFromDB(){
+    public List<Order> getListOrderFromDB(String emplID, int[] status){
         List<Order> list = new ArrayList<>();
         db = salesMobileAssistant.getReadableDatabase();
 
         String sql = "SELECT* FROM " + salesMobileAssistant.TB_ORDERS + " WHERE " +
-                salesMobileAssistant.TB_ORDER_ORDERSTATUS + " = 1";
+                salesMobileAssistant.TB_ORDER_EMPLOYEEID + " = '" + emplID + "' AND " +
+                salesMobileAssistant.TB_ORDER_ORDERSTATUS + " IN ( ";
+
+        for (int i=0; i<status.length; i++){
+            sql += status[i];
+            if(i >= status.length - 1)
+                sql += ")";
+            else sql += ", ";
+        }
+
         try {
             Cursor cursor = db.rawQuery(sql, null);
             cursor.moveToPosition(-1);
             while (cursor.moveToNext()){
                 list.add(new Order(cursor));
             }
+            cursor.close();
         }catch (Exception e){
             Log.d("LLLOrderDAOGetListDB", e.getMessage());
         }
-        return list;
+        finally {
+            db.close();
+            return list;
+        }
     }
 
-    public Order getOrderFromDBJob(String dateRoute){
+    public Order getOrderFromDBJob(int cusID, String dateRoute){
         db = salesMobileAssistant.getReadableDatabase();
+        Order o = null;
 
         String sql = "SELECT* FROM " + salesMobileAssistant.TB_ORDERS + " WHERE " +
                 salesMobileAssistant.TB_ORDER_ORDERSTATUS + " = 1 AND " +
-                salesMobileAssistant.TB_ORDER_REQUESTDATE + " = '" + dateRoute + "'";
+                salesMobileAssistant.TB_ORDER_REQUESTDATE + " = '" + dateRoute + "' AND " +
+                salesMobileAssistant.TB_ORDER_CUSTOMERID + " = " + cusID;
         try {
             Cursor cursor = db.rawQuery(sql, null);
             cursor.moveToPosition(-1);
             while (cursor.moveToNext()){
-                Order o = new Order(cursor);
+                o = new Order(cursor);
                 if(o != null)
-                    return o;
+                    break;
             }
+            cursor.close();
         }catch (Exception e){
             Log.d("LLLOrderDAOGetListDB", e.getMessage());
         }
-        return null;
+        finally {
+            db.close();
+            return o;
+        }
     }
 
     public boolean setSyncedToCenter(Order order){

@@ -5,21 +5,21 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.doannganh.salesmobileassistant.Presenter.ProductPresenter;
 import com.doannganh.salesmobileassistant.R;
 import com.doannganh.salesmobileassistant.Views.adapter.CustomAdapterListView;
-import com.doannganh.salesmobileassistant.model.Custom_grid_item;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.doannganh.salesmobileassistant.Views.adapter.CustomAdapterGridView;
+import com.doannganh.salesmobileassistant.util.PermissionUtil;
 import com.doannganh.salesmobileassistant.model.Custom_list_item;
 import com.doannganh.salesmobileassistant.model.Product;
 import com.doannganh.salesmobileassistant.model.ProductInSite;
@@ -84,7 +84,7 @@ public class PartsActivity extends AppCompatActivity {
             list.add(new Custom_list_item(p.getProdName(), p.getProdID(), ""));
         }
 
-        customAdapterListView = new CustomAdapterListView(this, R.layout.custom_list_item, list);
+        customAdapterListView = new CustomAdapterListView(this, list);
         listView.setAdapter(customAdapterListView);
     }
 
@@ -93,7 +93,20 @@ public class PartsActivity extends AppCompatActivity {
 
     }
 
-    public class AsyncTaskLoadActi extends AsyncTask<Void, Void, List<Product>> {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.list_product_menu_option, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // refresh (quality)
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public class AsyncTaskLoadActi extends AsyncTask<Void, Void, Long> {
 
         private ProgressDialog progressDialog;
 
@@ -105,26 +118,37 @@ public class PartsActivity extends AppCompatActivity {
         }
 
         @Override
-        protected List<Product> doInBackground(Void... voids) {
-            try {
-                productPresenter = ProductPresenter.Instance(getApplicationContext());
-                listProduct = productPresenter.GetListProduct();
-                return listProduct;
-            } catch (Exception e) {
-                Toast.makeText(PartsActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                onBackPressed();
+        protected Long doInBackground(Void... voids) {
+            productPresenter = ProductPresenter.Instance(getApplicationContext());
+            if(PermissionUtil.haveNetworkConnection(PartsActivity.this)) {
+                try {
+                    long num = 0;
+                    listProduct = productPresenter.GetListProduct();
+                    if(listProduct != null)
+                        num = productPresenter.saveProductToDB(listProduct);
+                    return num;
+                } catch (Exception e) {
+                    Toast.makeText(PartsActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    onBackPressed();
+                }
+            } else {
+                // load from db
+                listProduct = productPresenter.getListProductFromDB(MainActivity.account.getCompany());
+                return (long) listProduct.size();
             }
             return null;
         }
 
         @Override
-        protected void onPostExecute(List<Product> l) {
+        protected void onPostExecute(Long l) {
             progressDialog.dismiss();
 
-            if(l != null){
+            if(l != 0){
                 LoadGridView();
 
                 EvenClickGridView();
+            } else {
+                PermissionUtil.showToastNetworkError(getApplicationContext());
             }
         }
     }

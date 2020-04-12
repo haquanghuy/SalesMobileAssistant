@@ -44,6 +44,8 @@
 
     <string name="config_note">Note: After this setting is changed, you need restart the app. If the application does not turn off, turn it off completely. You can reset this configuration at the login screen.</string>
 
+    <string name="dialog_listorder_mess_delete_orderjob1">This order is under temporary storage and has not been recorded by the system.</string>
+    <string name="dialog_listorder_mess_delete_orderjob2">Deleting this order means you will have to redo the following job:</string>
     <!-- loading -->
     <string name="layout_loading_text">Loading...</string>
 
@@ -60,9 +62,9 @@
 
     <!-- orders -->
     <string name="orders_tag">Orders</string>
-    <string name="orders_item0">New Order</string>
-    <string name="orders_item1">All my Order</string>
-    <string name="orders_item2">Syns Oders</string>
+    <string name="orders_item0">New order</string>
+    <string name="orders_item1">All my orders are posted</string>
+    <string name="orders_item2">Syns oders</string>
     <string name="orders_item3">Report</string>
 
     <!-- new order-->
@@ -78,7 +80,9 @@
     <string name="neworder_product_textbeforequantity">Quantity exists: </string>
     <string name="neworder_product_textbeforequantityError">This product is not ready for sale</string>
     <string name="neworder_product_textLableQuantity">"QL: "</string>
+    <string name="neworder_product_inputTextLableQuantity">"Quality : "</string>
     <string name="neworder_product_dialog_message_existsproduct">You have previously added this product. Do you want to accumulate?</string>
+    <string name="neworder_product_pleaseChooswProduct">You need to choose at least 1 product.</string>
     <string name="neworder_total_tax">"Tax (%): "</string>
     <string name="neworder_total_totaltax">"Total tax (VND): "</string>
     <string name="neworder_total_discountpercen">"Discount percentage (%): "</string>
@@ -91,9 +95,10 @@
     <string name="listorder_notsynced">Not synced: </string>
     <string name="listorder_delete_message">This order will be permanently deleted and cannot be restored. Do you want to delete?</string>
     <string name="listorder_delete_error">Failed to delete this order</string>
+    <string name="listorder_no_order">You have no order</string>
     <string name="listorder_delete_success">Successfully deleted</string>
+    <string name="listorder_list_thisweek">This week</string>
     <string name="listorder_list_thismonth">This month</string>
-    <string name="listorder_list_lastmonth">Last month</string>
     <string name="listorder_list_other">Other</string>
 
     <!-- Sync order-->
@@ -110,6 +115,19 @@
     <string name="routeplan_tag">Route Plan</string>
     <string name="routeplan_plan_check">You have already done this mission. Make new?</string>
     <string name="routeplan_cannot_change_status"> but system can\'t to change RoutePlan\'s status.</string>
+    <string name="routeplan_option_all">Show all</string>
+    <string name="routeplan_option_justNew">Unfinished work</string>
+    <string name="routeplan_numOfJob">Number of tasks to be performed:</string>
+    <string name="routeplan_no_job">You have no job</string>
+
+    <!-- MapRoutePlan-->
+    <string name="maprouteplan_tag">Map</string>
+    <string name="maprouteplan_nopermission">Please enable this permission to load map</string>
+    <string name="maprouteplan_needpermission_title">Need permission</string>
+    <string name="maprouteplan_needpermission_message">The application needs permission to access your location to locate users on the map. Authorize now!</string>
+    <string name="maprouteplan_findpath">Find path</string>
+    <string name="maprouteplan_menu_createorder">Start creating orders</string>
+    <string name="maprouteplan_text_showGPS">Please turn on GPS for best display. <u>Turn on now!</u></string>
 
     <!-- Setting-->
     <string name="setting_tag">Setting</string>
@@ -121,7 +139,7 @@
     <string name="setting_update">Check for updates</string>
     <string name="setting_update_no">Your version is already the latest</string>
     <string name="setting_about">About</string>
-    <string name="setting_about_content">App name: Sales Mobile Assistant\nAuthor:\n   - Ha Quang Huy\n  - Nguyen Truong Gia \nContact:\n   - 1651010066huy@ou.edu.vn\n   - 1651012043gia@ou.edu.vn \nCopyright belongs to the above authors</string>
+    <string name="setting_about_content" translatable="false">App name: Sales Mobile Assistant\nAuthor:\n   - Ha Quang Huy\n  - Nguyen Truong Gia \nContact:\n   - 1651010066huy@ou.edu.vn\n   - 1651012043gia@ou.edu.vn \nCopyright belongs to the above authors</string>
 
     <!-- Config-->
     <string name="config_tag">Configuration</string>
@@ -134,8 +152,9 @@
     <string name="post_json_error_detail">"Error when choose product"</string>
     <string name="post_json_exists">This order has been posted to the previous center</string>
 
-    <string name="save_order_error">This order can only be viewed and posted to center</string>
+    <string name="save_order_view">This order can only be viewed and posted to center</string>
     <string name="save_order_success">The order has been successfully saved</string>
+    <string name="save_order_error">Can\'t to save. Try again</string>
 
 
     <string name="search_title">Search by customer name</string>
@@ -146,6 +165,4 @@
     <string name="config_sync">Syncing your order...</string>
     <string name="neworder_invalid_customer">This customer is not under your jurisdiction.</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

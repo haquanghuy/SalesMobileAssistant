@@ -2,8 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.doannganh.salesmobileassistant">
 
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the 'MyLocation' functionality.
+    -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
         android:allowBackup="true"
@@ -12,7 +20,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".WelcomeActivity"></activity>
+
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/.
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <activity
+            android:name=".Views.activity.MapsRoutePlanActivity"
+            android:label="@string/maprouteplan_tag"></activity>
+        <activity android:name=".WelcomeActivity" />
         <activity
             android:name=".Views.activity.SplashScreenActivity"
             android:theme="@style/SplashscreenTheme">
@@ -39,7 +63,8 @@
             android:parentActivityName=".Views.activity.MainActivity" />
         <activity
             android:name=".Views.activity.PartDetailActivity"
-            android:parentActivityName=".Views.activity.PartsActivity" />
+            android:parentActivityName=".Views.activity.PartsActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".Views.activity.PartsActivity"
             android:parentActivityName=".Views.activity.MainActivity" />
@@ -53,7 +78,7 @@
             android:name=".Views.activity.NewOrderActivity"
             android:parentActivityName=".Views.activity.OrdersActivity" />
         <activity android:name=".Views.activity.LoginActivity" />
-        <activity android:name=".Views.activity.MainActivity"></activity>
+        <activity android:name=".Views.activity.MainActivity" />
     </application>
 
 </manifest>

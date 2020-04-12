@@ -113,7 +113,6 @@ public class Order implements Serializable {
         NeedByDate = cursor.getString(cursor.getColumnIndex(SalesMobileAssistant.TB_ORDER_NEEDBYDATE));
         RequestDate = cursor.getString(cursor.getColumnIndex(SalesMobileAssistant.TB_ORDER_REQUESTDATE));
         OrderStatus = cursor.getInt(cursor.getColumnIndex(SalesMobileAssistant.TB_ORDER_ORDERSTATUS));
-
     }
 
     public void setOrderHead(int custID, String emplID, String orderDate,

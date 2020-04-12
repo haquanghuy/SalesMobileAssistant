@@ -1,14 +1,18 @@
 package com.doannganh.salesmobileassistant.Manager.DAO;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
 import com.doannganh.salesmobileassistant.Manager.ExecMethodHTTP;
 import com.doannganh.salesmobileassistant.Manager.Server;
+import com.doannganh.salesmobileassistant.model.Customer;
 import com.doannganh.salesmobileassistant.model.Product;
 import com.doannganh.salesmobileassistant.model.ProductInSite;
+import com.doannganh.salesmobileassistant.util.ConstantUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -52,6 +56,27 @@ public class ProductInSiteDAO {
         return executeJSONArray(jsonArray);
     }
 
+    public List<ProductInSite> getListProductInSiteFromDB(){
+        List<ProductInSite> list = new ArrayList<>();
+        db = salesMobileAssistant.getReadableDatabase();
+
+        String sql = "SELECT* FROM " + salesMobileAssistant.TB_PRODUCTINSITE;
+        try {
+            Cursor cursor = db.rawQuery(sql, null);
+            cursor.moveToPosition(-1);
+            while (cursor.moveToNext()){
+                list.add(new ProductInSite(cursor));
+            }
+            cursor.close();
+        }catch (Exception e){
+            Log.d("LLLProISiteDAOGetListDB", e.getMessage());
+        }
+        finally {
+            db.close();
+            return list;
+        }
+    }
+
     public int getQuantityDB(String productID){
         String sql = "select sum(d.SellingQuantity) as Quantity" +
                 " from OrderDetail d join Orders o on d.MyOrderID = o.MyOrderID" +
@@ -84,6 +109,51 @@ public class ProductInSiteDAO {
         }
         int inAPI = executeJSONArrayPartWhse(jsonArray, productID);
         return inAPI - inDB;
+    }
+
+    public long saveProductInSiteToDB(ProductInSite product){
+        db = salesMobileAssistant.getWritableDatabase();
+        long num = ConstantUtil.DB_CRUD_RESPONSE_EMPTY;
+        db.beginTransaction();
+
+        // kiem tra ton tai
+
+        String kt = "SELECT* FROM " + salesMobileAssistant.TB_PRODUCTINSITE + " WHERE "
+                + salesMobileAssistant.TB_PRODUCTINSITE_COMPANY + " = '" + product.getCompany()
+                + "' AND " + salesMobileAssistant.TB_PRODUCTINSITE_SITEID
+                + " = '" + product.getSiteID() + "' AND " + salesMobileAssistant.TB_PRODUCTINSITE_PRODUCTID
+                + " = '" + product.getProdID() + "'";
+        Cursor cKT = db.rawQuery(kt, null);
+
+        // neu ton tai -> return routeplan tu db
+        // dang ky
+        try {
+            ContentValues values = new ContentValues();
+            values.put(salesMobileAssistant.TB_PRODUCTINSITE_QUANTITY, product.getQuantity());
+
+            if (cKT.getCount() != 0) {
+                cKT.moveToFirst();
+                num = db.update(salesMobileAssistant.TB_PRODUCT, values, salesMobileAssistant.TB_PRODUCTINSITE_COMPANY +
+                        " = '" + product.getCompany() + "' AND " + salesMobileAssistant.TB_PRODUCTINSITE_SITEID
+                        + " = '" + product.getSiteID() + "' AND " + salesMobileAssistant.TB_PRODUCTINSITE_PRODUCTID
+                        + " = '" + product.getProdID() + "'", null);
+            }else {
+                values.put(salesMobileAssistant.TB_PRODUCTINSITE_COMPANY, product.getCompany());
+                values.put(salesMobileAssistant.TB_PRODUCTINSITE_SITEID, product.getSiteID());
+                values.put(salesMobileAssistant.TB_PRODUCTINSITE_PRODUCTID, product.getProdID());
+                num = db.insert(salesMobileAssistant.TB_PRODUCTINSITE, null, values);
+            }
+            db.setTransactionSuccessful();
+        }
+        catch (SQLiteException ex){
+            Log.d("LLL"+getTAG, ex.getMessage());
+            num = ConstantUtil.DB_CRUD_RESPONSE_ERROR;
+        }
+        finally {
+            cKT.close();
+            db.endTransaction();
+            return num;
+        }
     }
 
     private List<ProductInSite> executeJSONArray(JSONArray jsonArray){

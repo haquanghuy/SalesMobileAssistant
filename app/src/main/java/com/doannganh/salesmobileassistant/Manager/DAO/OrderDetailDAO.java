@@ -9,7 +9,9 @@ import android.util.Log;
 
 import com.doannganh.salesmobileassistant.Manager.ExecMethodHTTP;
 import com.doannganh.salesmobileassistant.Manager.Server;
+import com.doannganh.salesmobileassistant.model.Order;
 import com.doannganh.salesmobileassistant.model.OrderDetail;
+import com.doannganh.salesmobileassistant.util.ConstantUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -56,7 +58,7 @@ public class OrderDetailDAO {
         return executeJSONArray(jsonArray);
     }
 
-    public List<OrderDetail> getListOrder(String myID){
+    public List<OrderDetail> getListOrderDetail(String myID){
         String url = urlPost + "/" + myID;
         String content = ExecMethodHTTP.docNoiDung_Tu_URL(url);
         JSONArray jsonArray = null;
@@ -66,61 +68,6 @@ public class OrderDetailDAO {
             Log.d("LLLOrderDAO-json", e.getMessage());
         }
         return executeJSONArray(jsonArray);
-    }
-
-    public boolean postNewOrderDetail(List<HashMap> hashMap){
-        for (HashMap h : hashMap){
-            boolean b = ExecMethodHTTP.PostJSONToServer(urlPost,h);
-            if(!b) return false;
-        }
-        return true;
-    }
-
-    public int saveListOrderDetailToDB(List<OrderDetail> order){
-        int kq = 0;
-        for (OrderDetail o : order){
-            saveOrderDetailToDB(o);
-            kq++;
-        }
-        return kq;
-    }
-
-    public long saveOrderDetailToDB(OrderDetail order){
-        db = salesMobileAssistant.getWritableDatabase();
-        long numberOfRows = 0;
-        db.beginTransaction();
-
-        // kiem tra ton tai
-        String kt = "SELECT* FROM " + salesMobileAssistant.TB_ORDERDETAIL + " WHERE " + salesMobileAssistant.TB_ORDERDETAIL_COMPANY
-                + " = '" + order.getCompID() + "' AND " + salesMobileAssistant.TB_ORDERDETAIL_MYORDERID
-                + " = '" + order.getMyOrderID() + "' AND " + salesMobileAssistant.TB_ORDERDETAIL_PRODUCTID
-                + " = '" + order.getProdID() + "'";
-        Cursor cKT = db.rawQuery(kt, null);
-        if (cKT.getCount() != 0)
-            return 0;
-
-        // dang ky
-        try {
-            ContentValues values = new ContentValues();
-            values.put(salesMobileAssistant.TB_ORDERDETAIL_COMPANY, order.getCompID());
-            values.put(salesMobileAssistant.TB_ORDERDETAIL_MYORDERID, order.getMyOrderID());
-            values.put(salesMobileAssistant.TB_ORDERDETAIL_SITEID, order.getSiteID());
-            values.put(salesMobileAssistant.TB_ORDERDETAIL_ORDERNUM, order.getOrdeID());
-            values.put(salesMobileAssistant.TB_ORDERDETAIL_ORDERLINE, order.getOrderLine());
-            values.put(salesMobileAssistant.TB_ORDERDETAIL_PRODUCTID, order.getProdID());
-            values.put(salesMobileAssistant.TB_ORDERDETAIL_QUANTITY, order.getSellingQuantity());
-            values.put(salesMobileAssistant.TB_ORDERDETAIL_UNITPRICE, String.valueOf(order.getUnitPrice()));
-
-            numberOfRows = db.insert(salesMobileAssistant.TB_ORDERDETAIL, null, values);
-            db.setTransactionSuccessful();
-        }
-        catch (SQLiteException ex){
-            Log.d("LLL"+getTAG, ex.getMessage());
-        }
-        finally {
-            db.endTransaction();
-            return numberOfRows;
-        }
     }
 
     public List<OrderDetail> getListOrderDetailFromDB(String company, String myOrderID){
@@ -139,7 +86,97 @@ public class OrderDetailDAO {
         }catch (Exception e){
             Log.d("LLLOrderDAOGetListDB", e.getMessage());
         }
-        return list;
+        finally {
+            db.close();
+            return list;
+        }
+    }
+
+    public boolean postNewOrderDetail(List<HashMap> hashMap){
+        for (HashMap h : hashMap){
+            boolean b = ExecMethodHTTP.PostJSONToServer(urlPost,h);
+            if(!b) return false;
+        }
+        return true;
+    }
+
+    public long saveListOrderDetailToDB(List<OrderDetail> order){
+        db = salesMobileAssistant.getWritableDatabase();
+        db.beginTransaction();
+        long kq = ConstantUtil.DB_CRUD_RESPONSE_EMPTY;
+        for (OrderDetail o : order){
+            saveOrderDetailToDB(o);
+            kq++;
+        }
+
+        db.endTransaction();
+        return kq;
+    }
+
+    public long saveOrderDetailToDB(OrderDetail order){
+        long numberOfRows = ConstantUtil.DB_CRUD_RESPONSE_EMPTY;
+
+        // kiem tra ton tai
+        String kt = "SELECT* FROM " + salesMobileAssistant.TB_ORDERDETAIL + " WHERE " + salesMobileAssistant.TB_ORDERDETAIL_COMPANY
+                + " = '" + order.getCompID() + "' AND " + salesMobileAssistant.TB_ORDERDETAIL_MYORDERID
+                + " = '" + order.getMyOrderID() + "' AND " + salesMobileAssistant.TB_ORDERDETAIL_PRODUCTID
+                + " = '" + order.getProdID() + "'";
+        Cursor cKT = db.rawQuery(kt, null);
+
+        ContentValues values = new ContentValues();
+        values.put(salesMobileAssistant.TB_ORDERDETAIL_ORDERNUM, order.getOrdeID());
+        values.put(salesMobileAssistant.TB_ORDERDETAIL_ORDERLINE, order.getOrderLine());
+        values.put(salesMobileAssistant.TB_ORDERDETAIL_PRODUCTID, order.getProdID());
+        values.put(salesMobileAssistant.TB_ORDERDETAIL_QUANTITY, order.getSellingQuantity());
+        values.put(salesMobileAssistant.TB_ORDERDETAIL_UNITPRICE, String.valueOf(order.getUnitPrice()));
+
+        if (cKT.getCount() != 0){
+            numberOfRows = db.update(salesMobileAssistant.TB_ORDERDETAIL, values,
+                    salesMobileAssistant.TB_ORDERDETAIL_COMPANY +
+                    " = '" + order.getCompID() + "' AND " + salesMobileAssistant.TB_ORDERDETAIL_MYORDERID
+                    + " = '" + order.getMyOrderID() + "' AND " + salesMobileAssistant.TB_ORDERDETAIL_SITEID
+                    + " = '" + order.getSiteID() + "' AND " +salesMobileAssistant.TB_ORDERDETAIL_PRODUCTID
+                    + " = '" + order.getProdID() + "'", null);
+        }
+
+        // dang ky
+        try {
+            values.put(salesMobileAssistant.TB_ORDERDETAIL_COMPANY, order.getCompID());
+            values.put(salesMobileAssistant.TB_ORDERDETAIL_MYORDERID, order.getMyOrderID());
+            values.put(salesMobileAssistant.TB_ORDERDETAIL_SITEID, order.getSiteID());
+
+            numberOfRows = db.insert(salesMobileAssistant.TB_ORDERDETAIL, null, values);
+            db.setTransactionSuccessful();
+        }
+        catch (SQLiteException ex){
+            Log.d("LLL"+getTAG, ex.getMessage());
+            numberOfRows = ConstantUtil.DB_CRUD_RESPONSE_ERROR;
+        }
+        finally {
+            cKT.close();
+            return numberOfRows;
+        }
+    }
+
+    public boolean deleteOrderDetailFromDB(String companyID, String myOrderID){
+        db = salesMobileAssistant.getWritableDatabase();
+        db.beginTransaction();
+        int num = 0;
+
+        try {
+            num = db.delete(salesMobileAssistant.TB_ORDERDETAIL
+                    , salesMobileAssistant.TB_ORDERDETAIL_COMPANY +
+                    " = '" + companyID + "' AND " + salesMobileAssistant.TB_ORDERDETAIL_MYORDERID
+                    + " = '" + myOrderID + "'", null);
+            db.setTransactionSuccessful();
+        }
+        catch (SQLiteException ex){
+            Log.d("LLLOrderDAO-DelDB", ex.getMessage());
+        }
+        finally {
+            db.endTransaction();
+            return (num > 0);
+        }
     }
 
     private List<OrderDetail> executeJSONArray(JSONArray jsonArray){

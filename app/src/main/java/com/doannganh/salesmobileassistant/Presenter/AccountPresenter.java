@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.doannganh.salesmobileassistant.Manager.DAO.AccountDAO;
 import com.doannganh.salesmobileassistant.model.Account;
+import com.doannganh.salesmobileassistant.util.ConstantUtil;
 
 public class AccountPresenter {
     private static AccountPresenter instance;
@@ -30,12 +31,30 @@ public class AccountPresenter {
         return AccountPresenter.instance;
     }
 
-    public Account Login(Account account){
+    public Account loginFromAPI(Account account){
         try {
-            return accountDAO.Login(account);
+            return accountDAO.loginFromAPI(account);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public Account loginFromDB(Account account){
+        try {
+            return accountDAO.loginFromDB(account);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public long saveLogin(Account account){
+        try {
+            return accountDAO.saveAccountToDB(account);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ConstantUtil.DB_CRUD_RESPONSE_ERROR;
         }
     }
 

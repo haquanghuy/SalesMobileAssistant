@@ -1,6 +1,9 @@
 package com.doannganh.salesmobileassistant.model;
 
+import android.database.Cursor;
 import android.util.Log;
+
+import com.doannganh.salesmobileassistant.Manager.DAO.SalesMobileAssistant;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,6 +59,17 @@ public class ProductInSite implements Serializable {
         } catch (JSONException e) {
             e.printStackTrace();
             Log.d("LLLpublicProdInSiteJson", e.getMessage());
+        }
+    }
+
+    public ProductInSite(Cursor cursor){
+        try {
+            Company = cursor.getString(cursor.getColumnIndex(SalesMobileAssistant.TB_PRODUCTINSITE_COMPANY));
+            SiteID = cursor.getString(cursor.getColumnIndex(SalesMobileAssistant.TB_PRODUCTINSITE_SITEID));
+            ProdID = cursor.getString(cursor.getColumnIndex(SalesMobileAssistant.TB_PRODUCTINSITE_PRODUCTID));
+            quantity = cursor.getDouble(cursor.getColumnIndex(SalesMobileAssistant.TB_PRODUCTINSITE_QUANTITY));
+        }catch (Exception ex){
+            Log.d("LLLProdInSiteCursor", ex.getMessage());
         }
     }
 }

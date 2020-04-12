@@ -30,7 +30,7 @@ public class OrdersActivity extends AppCompatActivity {
         AnhXa();
         KhoiTaoList();
         LoadActionBar();
-        arrayAdapter = new CustomAdapterListViewWithTextView(this, R.layout.custom_list_item_with_textview, list);
+        arrayAdapter = new CustomAdapterListViewWithTextView(this, list);
         listView.setAdapter(arrayAdapter);
 
         ClickEventListView();

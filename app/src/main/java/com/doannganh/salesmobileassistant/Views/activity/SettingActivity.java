@@ -34,8 +34,7 @@ public class SettingActivity extends AppCompatActivity {
         list.add(getString(R.string.setting_theme));
         list.add(getString(R.string.setting_update));
         list.add(getString(R.string.setting_about));
-        customAdapterListViewWithTextView = new CustomAdapterListViewWithTextView(this,
-                R.layout.custom_list_item_with_textview, list);
+        customAdapterListViewWithTextView = new CustomAdapterListViewWithTextView(this, list);
         listView.setAdapter(customAdapterListViewWithTextView);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -44,6 +43,7 @@ public class SettingActivity extends AppCompatActivity {
                 switch (i){
                     case 0:
                         startActivity(new Intent(SettingActivity.this, ConfigActivity.class));
+                        finish();
                         break;
                     case 1:
                         startActivity(new Intent(SettingActivity.this, LanguageActivity.class));

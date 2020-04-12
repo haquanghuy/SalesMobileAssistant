@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
 import com.doannganh.salesmobileassistant.model.ConnectionConfig;
+import com.doannganh.salesmobileassistant.util.ConstantUtil;
 
 public class ConnectionConfigDAO {
     SQLiteDatabase db;
@@ -49,8 +50,9 @@ public class ConnectionConfigDAO {
     }
 
     public long saveOrderToDB(ConnectionConfig config){
+        deleteAllConfigDB();
         db = salesMobileAssistant.getWritableDatabase();
-        long numberOfRows = 0;
+        long numberOfRows = ConstantUtil.DB_CRUD_RESPONSE_EMPTY;
         db.beginTransaction();
 
         // kiem tra ton tai
@@ -71,18 +73,18 @@ public class ConnectionConfigDAO {
             values.put(salesMobileAssistant.TB_CONNECTIONCONFIG_PASS, config.getPassword());
             values.put(salesMobileAssistant.TB_CONNECTIONCONFIG_COMPANY, config.getCompany());
 
+            // kiem tra lai cho chac
             if (cKT.getCount() != 0)
                 numberOfRows = db.update(salesMobileAssistant.TB_CONNECTIONCONFIG, values, salesMobileAssistant.TB_CONNECTIONCONFIG_API +
                         " = '" + config.getAPI_path() + "'", null);
             else {
-
-                deleteAllConfigDB();
                 numberOfRows = db.insert(salesMobileAssistant.TB_CONNECTIONCONFIG, null, values);
             }
             db.setTransactionSuccessful();
         }
         catch (SQLiteException ex){
             Log.d("LLL"+getTAG, ex.getMessage());
+            numberOfRows = ConstantUtil.DB_CRUD_RESPONSE_ERROR;
         }
         finally {
             db.endTransaction();

@@ -24,7 +24,7 @@ public class SalesMobileAssistant extends SQLiteOpenHelper {
 
         String tbPRODUCT = "CREATE TABLE " + TB_PRODUCT + " ( " + TB_PRODUCT_COMPANY + " TEXT, "
                 + TB_PRODUCT_TYPE + " TEXT, " + TB_PRODUCT_ID + " TEXT, " + TB_PRODUCT_NAME + " TEXT, "
-                + TB_PRODUCT_UNITPRICE + " DECIMAL, " + TB_PRODUCT_UOM + " TEXT, " + TB_PRODUCT_DATEUPDATE + " DATE, "
+                + TB_PRODUCT_UNITPRICE + " DOUBLE, " + TB_PRODUCT_UOM + " TEXT, " + TB_PRODUCT_DATEUPDATE + " TEXT, "
                 + "PRIMARY KEY(CompID, ProdID))";
 
         String tbPRODUCTINSITE = "CREATE TABLE " + TB_PRODUCTINSITE + " ( " + TB_PRODUCTINSITE_COMPANY + " TEXT, "
@@ -49,8 +49,8 @@ public class SalesMobileAssistant extends SQLiteOpenHelper {
                 + "PRIMARY KEY (CompID, SiteID, MyOrderID, ProdID))";
 
         String tbROUTEPLAN = "CREATE TABLE " + TB_ROUTEPLAN + " ( " + TB_ROUTEPLAN_COMPANY + " TEXT, "
-                + TB_ROUTEPLAN_EMPLOYEEID + " TEXT, " + TB_ROUTEPLAN_CUSTOMERID + " INTEGER, " + TB_ROUTEPLAN_DATEPLAN + " DATE, "
-                + TB_ROUTEPLAN_PRIORITIZE + " INTEGER, " + TB_ROUTEPLAN_VISITED + " BOOLEAN, " + TB_ROUTEPLAN_NOTE + " TEXT, "
+                + TB_ROUTEPLAN_EMPLOYEEID + " TEXT, " + TB_ROUTEPLAN_CUSTOMERID + " INTEGER, " + TB_ROUTEPLAN_DATEPLAN + " TEXT, "
+                + TB_ROUTEPLAN_PRIORITIZE + " INTEGER, " + TB_ROUTEPLAN_VISITED + " INTEGER, " + TB_ROUTEPLAN_NOTE + " TEXT, "
                 + "PRIMARY KEY (CompID, EmplID, CustID, DatePlan))";
 
         String tbACCOUNT = "CREATE TABLE " + TB_ACCOUNT + " ( " + TB_ACCOUNT_COMPANYID + " TEXT, "
@@ -62,6 +62,10 @@ public class SalesMobileAssistant extends SQLiteOpenHelper {
                 + TB_CONNECTIONCONFIG_USER + " TEXT, "
                 + TB_CONNECTIONCONFIG_PASS+ " TEXT, " + TB_CONNECTIONCONFIG_COMPANY + " TEXT)";
 
+        String tbIMAGES = "CREATE TABLE " + TB_IMAGES + " ( " + TB_IMAGES_KEY + " TEXT, "
+                + TB_IMAGES_FIENAME + " TEXT, "
+                + TB_IMAGES_DATA + " BLOB, " + TB_IMAGES_COMPANY + " TEXT)";
+
         db.execSQL(tbEMPLOYEE);
         db.execSQL(tbPRODUCT);
         db.execSQL(tbPRODUCTINSITE);
@@ -71,6 +75,7 @@ public class SalesMobileAssistant extends SQLiteOpenHelper {
         db.execSQL(tbROUTEPLAN);
         db.execSQL(tbACCOUNT);
         db.execSQL(tbCONNECTIONCONFIG);
+        db.execSQL(tbIMAGES);
     }
 
     @Override
@@ -84,6 +89,7 @@ public class SalesMobileAssistant extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS " + TB_ROUTEPLAN + ";");
             db.execSQL("DROP TABLE IF EXISTS " + TB_ACCOUNT + ";");
             db.execSQL("DROP TABLE IF EXISTS " + TB_CONNECTIONCONFIG + ";");
+            db.execSQL("DROP TABLE IF EXISTS " + TB_IMAGES + ";");
             onCreate(db);
         }
     }
@@ -104,6 +110,7 @@ public class SalesMobileAssistant extends SQLiteOpenHelper {
     public static final String TB_ROUTEPLAN = "ROUTEPLAN";
     public static final String TB_ACCOUNT = "ACCOUNT";
     public static final String TB_CONNECTIONCONFIG = "CONNECTIONCONFIG";
+    public static final String TB_IMAGES = "IMAGES";
 
     public static final String TB_EMPLOYEE_COMPANY = "CompID";
     public static final String TB_EMPLOYEE_TYPEID= "ETypeID";
@@ -175,4 +182,9 @@ public class SalesMobileAssistant extends SQLiteOpenHelper {
     public static final String TB_CONNECTIONCONFIG_USER = "EpicorUser";
     public static final String TB_CONNECTIONCONFIG_PASS = "EpicorPassword";
     public static final String TB_CONNECTIONCONFIG_COMPANY = "EpicorCompany";
+
+    public static final String TB_IMAGES_COMPANY = "ImageCompany";
+    public static final String TB_IMAGES_KEY = "ImageKey";
+    public static final String TB_IMAGES_FIENAME = "ImageName";
+    public static final String TB_IMAGES_DATA = "ImageData";
 }

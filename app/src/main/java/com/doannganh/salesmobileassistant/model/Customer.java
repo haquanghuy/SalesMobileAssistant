@@ -1,6 +1,9 @@
 package com.doannganh.salesmobileassistant.model;
 
+import android.database.Cursor;
 import android.util.Log;
+
+import com.doannganh.salesmobileassistant.Manager.DAO.SalesMobileAssistant;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,6 +55,24 @@ public class Customer implements Serializable {
         } catch (JSONException e) {
             e.printStackTrace();
             Log.d("LLLpublicCustomerJson", e.getMessage());
+        }
+    }
+
+    public Customer(Cursor cursor){
+        try {
+            CompID = cursor.getString(cursor.getColumnIndex(SalesMobileAssistant.TB_CUSTOMER_COMPANY_));
+            EmplID = cursor.getString(cursor.getColumnIndex(SalesMobileAssistant.TB_CUSTOMER_EMPLOYEEID_));
+            CustID = cursor.getInt(cursor.getColumnIndex(SalesMobileAssistant.TB_CUSTOMER_ID_));
+            CustName = cursor.getString(cursor.getColumnIndex(SalesMobileAssistant.TB_CUSTOMER_NAME));
+            Address1 = cursor.getString(cursor.getColumnIndex(SalesMobileAssistant.TB_CUSTOMER_ADDRESS1));
+            Address2 = cursor.getString(cursor.getColumnIndex(SalesMobileAssistant.TB_CUSTOMER_ADDRESS2));
+            Address3 = cursor.getString(cursor.getColumnIndex(SalesMobileAssistant.TB_CUSTOMER_ADDRESS3));
+            City = cursor.getString(cursor.getColumnIndex(SalesMobileAssistant.TB_CUSTOMER_CITY));
+            Country = cursor.getString(cursor.getColumnIndex(SalesMobileAssistant.TB_CUSTOMER_COUNTRY));
+            PhoneNum = cursor.getString(cursor.getColumnIndex(SalesMobileAssistant.TB_CUSTOMER_PHONENUM));
+            TrueDiscountPercent = cursor.getDouble(cursor.getColumnIndex(SalesMobileAssistant.TB_CUSTOMER_DISCOUNT));
+        }catch (Exception ex){
+            Log.d("LLLCustomerCursor", ex.getMessage());
         }
     }
 
@@ -133,5 +154,13 @@ public class Customer implements Serializable {
 
     public void setTrueDiscountPercent(double trueDiscountPercent) {
         TrueDiscountPercent = trueDiscountPercent;
+    }
+
+    public String getAddress3() {
+        return Address3;
+    }
+
+    public void setAddress3(String address3) {
+        Address3 = address3;
     }
 }

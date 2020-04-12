@@ -1,6 +1,9 @@
 package com.doannganh.salesmobileassistant.model;
 
+import android.database.Cursor;
 import android.util.Log;
+
+import com.doannganh.salesmobileassistant.Manager.DAO.SalesMobileAssistant;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,9 +20,9 @@ public class Product implements Serializable {
     String ProdName;
     double UnitPrice;
     String UOM;
-    Date DateUpdate;
+    String DateUpdate;
 
-    public Product(String compID, String PTypeID, String prodID, String prodName, double unitPrice, String UOM, Date dateUpdate) {
+    public Product(String compID, String PTypeID, String prodID, String prodName, double unitPrice, String UOM, String dateUpdate) {
         CompID = compID;
         this.PTypeID = PTypeID;
         ProdID = prodID;
@@ -38,14 +41,25 @@ public class Product implements Serializable {
             UnitPrice = jsonObject.getDouble("UnitPrice");
             UOM = jsonObject.getString("UOM");
 
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-            DateUpdate = format.parse(jsonObject.getString("DateUpdate"));
+            //SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            DateUpdate = jsonObject.getString("DateUpdate");
         } catch (JSONException e) {
             e.printStackTrace();
             Log.d("publicProductJson", e.getMessage());
-        } catch (ParseException e) {
-            e.printStackTrace();
-            Log.d("publicProductJsonDate", e.getMessage());
+        }
+    }
+
+    public Product(Cursor cursor){
+        try {
+            CompID = cursor.getString(cursor.getColumnIndex(SalesMobileAssistant.TB_PRODUCT_COMPANY));
+            PTypeID = cursor.getString(cursor.getColumnIndex(SalesMobileAssistant.TB_PRODUCT_TYPE));
+            ProdID = cursor.getString(cursor.getColumnIndex(SalesMobileAssistant.TB_PRODUCT_ID));
+            ProdName = cursor.getString(cursor.getColumnIndex(SalesMobileAssistant.TB_PRODUCT_NAME));
+            UnitPrice = cursor.getDouble(cursor.getColumnIndex(SalesMobileAssistant.TB_PRODUCT_UNITPRICE));
+            UOM = cursor.getString(cursor.getColumnIndex(SalesMobileAssistant.TB_PRODUCT_UOM));
+            DateUpdate = cursor.getString(cursor.getColumnIndex(SalesMobileAssistant.TB_PRODUCT_DATEUPDATE));
+        }catch (Exception ex){
+            Log.d("LLLRoutePlanCursor", ex.getMessage());
         }
     }
 
@@ -97,11 +111,11 @@ public class Product implements Serializable {
         this.UOM = UOM;
     }
 
-    public Date getDateUpdate() {
+    public String getDateUpdate() {
         return DateUpdate;
     }
 
-    public void setDateUpdate(Date dateUpdate) {
+    public void setDateUpdate(String dateUpdate) {
         DateUpdate = dateUpdate;
     }
 }
