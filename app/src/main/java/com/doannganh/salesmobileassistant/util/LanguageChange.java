@@ -1,4 +1,4 @@
-package com.doannganh.salesmobileassistant.Views.util;
+package com.doannganh.salesmobileassistant.util;
 
 import android.app.Activity;
 import android.content.Context;

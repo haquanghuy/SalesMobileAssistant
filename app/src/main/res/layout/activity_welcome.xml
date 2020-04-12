@@ -6,20 +6,21 @@
     android:orientation="vertical"
     android:background="@drawable/welcom"
     tools:context=".WelcomeActivity">
+    <!--
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
+            <fragment
+                android:id="@+id/fragment"
+                android:name="com.doannganh.salesmobileassistant.Views.fragment.WelcomPagerFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
 
-        <fragment
-            android:id="@+id/fragment"
-            android:name="com.doannganh.salesmobileassistant.Views.fragment.WelcomPagerFragment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
     </LinearLayout>
-
+-->
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"

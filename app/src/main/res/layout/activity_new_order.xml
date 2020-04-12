@@ -1,71 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/linearOrderNew"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
+    <FrameLayout
+        android:layout_above="@+id/layoutButton"
+        android:id="@+id/frameLayourNewOrder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <LinearLayout android:orientation="vertical"
+        <ProgressBar
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="-5dp"
+        android:orientation="vertical"
+        android:id="@+id/layoutButton"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="-6dp">
 
-            <LinearLayout android:orientation="vertical"
-                android:weightSum="16"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+            <Button
+                android:id="@+id/btnNewOrderPrev"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:background="@color/public_button_bacground"
+                android:text="@string/neworder_text_buttonClear" />
 
-                <FrameLayout
-                    android:layout_weight="14"
-                    android:id="@+id/frameLayourNewOrder"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp">
-
-                </FrameLayout>
-
-                <LinearLayout
-                    android:layout_weight="2"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:orientation="vertical"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <LinearLayout
-                        android:layout_marginBottom="-6dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <Button
-                            android:layout_margin="3dp"
-                            android:background="@color/public_button_bacground"
-                            android:id="@+id/btnNewOrderPrev"
-                            android:layout_weight="1"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="@string/neworder_text_buttonClear" />
-                        <Button
-                            android:layout_margin="3dp"
-                            android:background="@color/public_button_bacground"
-                            android:id="@+id/btnNewOrderNext"
-                            android:layout_weight="1"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="@string/neworder_text_buttonNext" />
-                    </LinearLayout>
-
-                    <Button android:id="@+id/btnNewOrderSave"
-                        android:visibility="invisible"
-                        android:gravity="center"
-                        android:textColor="@color/textSave"
-                        android:onClick="saveOffline"
-                        android:text="@string/neworder_text_saveorder"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-                </LinearLayout>
-
-
-            </LinearLayout>
+            <Button
+                android:id="@+id/btnNewOrderNext"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:background="@color/public_button_bacground"
+                android:text="@string/neworder_text_buttonNext" />
         </LinearLayout>
 
-</LinearLayout>
+        <Button
+            android:id="@+id/btnNewOrderSave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:onClick="saveOffline"
+            android:text="@string/neworder_text_saveorder"
+            android:textColor="@color/textSave"
+            android:visibility="invisible" />
+    </LinearLayout>
+
+</RelativeLayout>

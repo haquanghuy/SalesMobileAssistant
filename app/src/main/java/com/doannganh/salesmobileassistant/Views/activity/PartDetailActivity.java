@@ -1,14 +1,9 @@
 package com.doannganh.salesmobileassistant.Views.activity;
 
-import android.app.ProgressDialog;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.widget.EditText;
 import android.widget.TextView;
 
-import com.doannganh.salesmobileassistant.Presenter.ProductPresenter;
 import com.doannganh.salesmobileassistant.R;
 import com.doannganh.salesmobileassistant.model.Product;
 import com.doannganh.salesmobileassistant.model.ProductInSite;
@@ -44,7 +39,7 @@ public class PartDetailActivity extends AppCompatActivity {
 
     private void LoadProduct() {
         // set view
-        txtTitle.setText(getString(R.string.productinfo_title) + product.getProdName() +
+        txtTitle.setText(getString(R.string.productinfo_title) + " " + product.getProdName() +
                 " - " + product.getProdID());
         edtCOmpany.setText(product.getCompID());
         edtGroup.setText(product.getPTypeID());

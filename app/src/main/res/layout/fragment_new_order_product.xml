@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:padding="10dp"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorDefaultBackgView"
@@ -10,10 +9,10 @@
     tools:context=".Views.activity.NewOrderActivity">
 
     <TableLayout
-        android:layout_weight="26"
+        android:layout_above="@+id/txtNewOrderProductTotal"
         android:id="@+id/tableLayoutNewOrderProduct"
         android:layout_width="match_parent"
-        android:layout_height="0dp">
+        android:layout_height="match_parent">
 
         <Button
             android:id="@+id/btnNewOrderProductGetProduct"
@@ -41,12 +40,12 @@
     </TableLayout>
 
     <TextView
+        android:layout_alignParentBottom="true"
         android:id="@+id/txtNewOrderProductTotal"
         android:textColor="#C42A20"
         android:gravity="right"
-        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:text="This is total monney"/>
 
-</LinearLayout>
+</RelativeLayout>

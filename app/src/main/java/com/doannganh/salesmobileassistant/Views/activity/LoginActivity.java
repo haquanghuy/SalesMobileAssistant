@@ -18,7 +18,7 @@ import com.doannganh.salesmobileassistant.Presenter.AccountPresenter;
 import com.doannganh.salesmobileassistant.Presenter.ConnectionConfigPresenter;
 import com.doannganh.salesmobileassistant.Presenter.EmployeePresenter;
 import com.doannganh.salesmobileassistant.R;
-import com.doannganh.salesmobileassistant.Views.util.CheckConnection;
+import com.doannganh.salesmobileassistant.util.PermissionUtil;
 import com.doannganh.salesmobileassistant.WelcomeActivity;
 import com.doannganh.salesmobileassistant.model.Account;
 import com.doannganh.salesmobileassistant.model.ConnectionConfig;
@@ -27,7 +27,8 @@ import com.doannganh.salesmobileassistant.model.Employee;
 public class LoginActivity extends AppCompatActivity {
 
     public static Account account;
-            EditText edtUser, edtPass;
+    boolean isLoadPreference = false;
+    EditText edtUser, edtPass;
 
     CheckBox checkBox;
     Button btnLogin;
@@ -69,6 +70,7 @@ public class LoginActivity extends AppCompatActivity {
         edtUser.setText(a[0]);
         edtPass.setText(a[1]);
         if(a[0].equals("") || a[1].equals("") || b) return;
+        isLoadPreference = true;
         Login();
     }
 
@@ -92,10 +94,8 @@ public class LoginActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(CheckConnection.haveNetworkConnection(getApplicationContext())) {
-                    AsyncTaskGetJSONArray asyncTaskGetJSONArray = new AsyncTaskGetJSONArray();
-                    asyncTaskGetJSONArray.execute(account);
-                }else CheckConnection.ShowToastError(getApplicationContext());
+                AsyncTaskGetJSONArray asyncTaskGetJSONArray = new AsyncTaskGetJSONArray();
+                asyncTaskGetJSONArray.execute(account);
             }
         });
     }
@@ -136,7 +136,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public class AsyncTaskGetJSONArray extends AsyncTask<Account, Void, Account> {
-
+        boolean isConnect = false;
         Employee employee;
         private ProgressDialog progressDialog;
         @Override
@@ -148,12 +148,27 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected Account doInBackground(Account... accounts) {
-            Account check;
-            check = accountPresenter.Login(accounts[0]);
+            EmployeePresenter employeePresenter = EmployeePresenter.Instance(getApplicationContext());
+            Account check = null;
 
-            if(check != null){
-                EmployeePresenter employeePresenter = EmployeePresenter.Instance(getApplicationContext());
-                employee = employeePresenter.getEmployee(check.getEmplID());
+            if(PermissionUtil.haveNetworkConnection(getApplicationContext())) {
+                check = accountPresenter.loginFromAPI(accounts[0]);
+
+                if (check != null) {
+                    employee = employeePresenter.getEmployee(check.getEmplID());
+                    // save db
+                    accountPresenter.saveLogin(check);
+                    employeePresenter.saveEmployeeToDB(employee);
+                }
+
+                isConnect = true;
+            } else {
+                isConnect = false;
+                if(isLoadPreference){
+                    check = accountPresenter.loginFromDB(accounts[0]);
+                    if(check != null)
+                        employee = employeePresenter.getEmployeeFromDB(check.getEmplID());
+                }
             }
             return check;
         }
@@ -175,11 +190,16 @@ public class LoginActivity extends AppCompatActivity {
                 //startActivity(intent);
             }
             else {
+                if(isLoadPreference)
+                    accountPresenter.saveAccountPreferences(getApplicationContext(),
+                            "", "");
                 progressDialog.dismiss();
                 edtPass.setText("");
                 if (checkBox.isChecked())
                     accountPresenter.saveAccountPreferences(getApplicationContext(),"", "");
-                Toast.makeText(LoginActivity.this, R.string.login_fail, Toast.LENGTH_SHORT).show();
+                if(!isConnect)
+                    PermissionUtil.showToastNetworkError(getApplicationContext());
+                else Toast.makeText(LoginActivity.this, R.string.login_fail, Toast.LENGTH_SHORT).show();
             }
         }
     }

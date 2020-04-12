@@ -3,7 +3,6 @@ package com.doannganh.salesmobileassistant.Views.customView;
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -11,7 +10,7 @@ import android.widget.ListView;
 
 import com.doannganh.salesmobileassistant.R;
 import com.doannganh.salesmobileassistant.Views.Interface.InterfaceReturnEventListerner;
-import com.doannganh.salesmobileassistant.Views.adapter.CustomAdapterListViewWithTextView;
+import com.doannganh.salesmobileassistant.Views.adapter.CustomAdapterListWithRadioButton;
 
 import java.util.List;
 
@@ -20,6 +19,7 @@ public class CustomDialogWithListRadio extends Dialog {
     Activity activity;
     List<String> list;
     int id;
+    int itemChecked = 0;
     
     private InterfaceReturnEventListerner onFooEventListener;
 
@@ -44,14 +44,15 @@ public class CustomDialogWithListRadio extends Dialog {
 
         ListView lv = (ListView) findViewById(R.id.lvDialogCustomList);
 
-        // Change MyActivity.this and myListOfItems to your own values
-        //CustomAdapterListWithRadioButton clad = new CustomAdapterListWithRadioButton(
-        //       activity, R.layout.custom_list_with_radiobutton, list);
+        CustomAdapterListWithRadioButton clad = new CustomAdapterListWithRadioButton(
+               activity, list);
 
-        CustomAdapterListViewWithTextView clad = new CustomAdapterListViewWithTextView(
-                activity, R.layout.custom_list_item_with_textview, list);
+        //CustomAdapterListViewWithTextView clad = new CustomAdapterListViewWithTextView(
+        //        activity, R.layout.custom_list_item_with_textview, list);
         lv.setAdapter(clad);
-
+        // no work
+        lv.setChoiceMode(lv.CHOICE_MODE_SINGLE);
+        lv.setItemChecked(itemChecked,true);
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -62,4 +63,8 @@ public class CustomDialogWithListRadio extends Dialog {
         });
     }
 
+
+    public void setItemChecked(int position){
+        itemChecked = position;
+    }
 }

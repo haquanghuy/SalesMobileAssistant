@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/maprouteplan_findpath"
+                android:id="@+id/btnMapsRoutePlanDirection" />
+
+            <!-- numer km -->
+            <ImageView
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_distance"
+                android:layout_marginStart="20dp"
+                android:contentDescription="Approx:" />
+            <TextView
+                android:layout_marginLeft="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0 km"
+                android:id="@+id/tvDistance"
+                android:layout_marginStart="5dp" />
+
+            <!-- numer time -->
+            <ImageView
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:padding="5dp"
+                android:src="@drawable/ic_clock"
+                android:layout_marginStart="20dp"
+                android:contentDescription="Approx:"/>
+            <TextView
+                android:layout_marginLeft="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0 min"
+                android:id="@+id/tvDuration"
+                android:layout_marginStart="5dp" />
+
+            <LinearLayout
+                android:gravity="right"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageButton
+                    android:id="@+id/imbMapRoutePlanRefresh"
+                    android:src="@drawable/ic_refresh"
+                    android:background="@null"
+                    android:layout_width="@dimen/public_imageSize"
+                    android:layout_height="@dimen/public_imageSize"/>
+            </LinearLayout>
+        </LinearLayout>
+
+    <TextView
+        android:id="@+id/txtShowNoteGPS"
+        android:gravity="center"
+        android:textSize="12sp"
+        android:text="@string/maprouteplan_text_showGPS"
+        android:background="#F1B946"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <fragment
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".Views.activity.MapsRoutePlanActivity" />
+
+</LinearLayout>

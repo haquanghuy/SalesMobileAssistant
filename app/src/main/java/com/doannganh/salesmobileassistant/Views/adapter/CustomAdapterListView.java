@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,18 +18,32 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class CustomAdapterListView extends ArrayAdapter {
+public class CustomAdapterListView extends BaseAdapter {
     Activity activity;
     int layout;
     List<Custom_list_item> list;
     List<Custom_list_item> listTemp;
 
-    public CustomAdapterListView(@NonNull Activity activity, int resource, @NonNull List<Custom_list_item> objects) {
-        super(activity, resource, objects);
+    public CustomAdapterListView(@NonNull Activity activity, @NonNull List<Custom_list_item> objects) {
         this.activity = activity;
-        this.layout = resource;
+        this.layout = R.layout.custom_list_item;
         this.list = objects;
         this.listTemp = new ArrayList<>();
+    }
+
+    @Override
+    public int getCount() {
+        return list.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return list.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     @NonNull
@@ -60,6 +75,22 @@ public class CustomAdapterListView extends ArrayAdapter {
                 }
             }
         }
+        notifyDataSetChanged();
+    }
+
+    public void changeListSourceOnce(List<Custom_list_item> li) {
+        list.clear();
+        if (li == null || li.size() < 1)
+            return;
+        list.addAll(li);
+
+        notifyDataSetChanged();
+    }
+
+    public void resetListSource() {
+        list.clear();
+        list.addAll(listTemp);
+
         notifyDataSetChanged();
     }
 

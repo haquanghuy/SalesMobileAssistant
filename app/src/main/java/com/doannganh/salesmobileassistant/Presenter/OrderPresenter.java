@@ -58,8 +58,8 @@ public class OrderPresenter {
         return orderDAO.getOrderIDCurrent(emplpyID);
     }
 
-    public List<Order> getListOrderFromDB(){
-        return orderDAO.getListOrderFromDB();
+    public List<Order> getListOrderFromDB(String emplID, int[] status){
+        return orderDAO.getListOrderFromDB(emplID, status);
     }
 
     public boolean setSyncedToCenter(Order order){
@@ -70,7 +70,7 @@ public class OrderPresenter {
         return orderDAO.deleteOrderFromDB(order);
     }
 
-    public Order getOrderFromDBJob(String dateRoute){
-        return orderDAO.getOrderFromDBJob(dateRoute);
+    public Order getOrderFromDBJob(int cusID, String dateRoute){
+        return orderDAO.getOrderFromDBJob(cusID, dateRoute);
     }
 }

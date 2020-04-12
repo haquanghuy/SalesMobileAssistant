@@ -6,11 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".Views.activity.ListOrdersActivity">
 
-    <TextView
-        android:text="This is title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
     <ListView android:background="@color/colorDefaultBackgView"
         android:id="@+id/lvParts"
         android:layout_width="match_parent"

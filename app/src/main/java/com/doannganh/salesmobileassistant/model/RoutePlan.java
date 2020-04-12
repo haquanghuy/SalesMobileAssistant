@@ -1,6 +1,9 @@
 package com.doannganh.salesmobileassistant.model;
 
+import android.database.Cursor;
 import android.util.Log;
+
+import com.doannganh.salesmobileassistant.Manager.DAO.SalesMobileAssistant;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -8,20 +11,26 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 
 public class RoutePlan {
+    public static final int VISITED = 1;
+    public static final int VISITOFFLINE = -1;
+    public static final int UNVISIT = 0;
+
+
     String CompID;
     String EmplID;
     int CustID;
     String DatePlan;
     int Prioritize;
-    boolean Visited;
+    int Visited;
     String Note;
+    int isSave; // db
 
     public static String COMPANY = "CompID";
     public static String EMPLID = "EmplID";
     public static String CUSTID = "CustID";
     public static String DATEPLAN = "DatePlan";
     public static String PRIORITIZE = "Prioritize";
-    public static String VISITED = "Visited";
+    public static String ISVISITED = "Visited";
     public static String NOTE = "Note";
 
     public RoutePlan(JSONObject jsonObject){
@@ -33,13 +42,28 @@ public class RoutePlan {
             CustID = jsonObject.getInt(CUSTID);
             DatePlan = jsonObject.getString(DATEPLAN);
             Prioritize = Integer.parseInt(jsonObject.getString(PRIORITIZE));
-            Visited = Boolean.parseBoolean(jsonObject.getString(VISITED));
+            boolean vsit = Boolean.parseBoolean(jsonObject.getString(ISVISITED));
+            Visited = vsit ? VISITED : UNVISIT;
             Note = jsonObject.getString(NOTE);
         } catch (JSONException e) {
             e.printStackTrace();
             Log.d("publicRoutePlanJson", e.getMessage());
         } catch(Exception e){
             Prioritize = 0;
+        }
+    }
+
+    public RoutePlan(Cursor cursor){
+        try {
+            CompID = cursor.getString(cursor.getColumnIndex(SalesMobileAssistant.TB_ROUTEPLAN_COMPANY));
+            EmplID = cursor.getString(cursor.getColumnIndex(SalesMobileAssistant.TB_ROUTEPLAN_EMPLOYEEID));
+            CustID = cursor.getInt(cursor.getColumnIndex(SalesMobileAssistant.TB_ROUTEPLAN_CUSTOMERID));
+            DatePlan = cursor.getString(cursor.getColumnIndex(SalesMobileAssistant.TB_ROUTEPLAN_DATEPLAN));
+            Prioritize = cursor.getInt(cursor.getColumnIndex(SalesMobileAssistant.TB_ROUTEPLAN_PRIORITIZE));
+            Visited = cursor.getInt(cursor.getColumnIndex(SalesMobileAssistant.TB_ROUTEPLAN_VISITED));
+            Note = cursor.getString(cursor.getColumnIndex(SalesMobileAssistant.TB_ROUTEPLAN_NOTE));
+        }catch (Exception ex){
+            Log.d("LLLRoutePlanCursor", ex.getMessage());
         }
     }
 
@@ -83,11 +107,11 @@ public class RoutePlan {
         Prioritize = prioritize;
     }
 
-    public boolean isVisited() {
+    public int isVisited() {
         return Visited;
     }
 
-    public void setVisited(boolean visited) {
+    public void setVisited(int visited) {
         Visited = visited;
     }
 

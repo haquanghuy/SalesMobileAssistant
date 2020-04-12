@@ -1,13 +1,17 @@
 package com.doannganh.salesmobileassistant.Manager.DAO;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
 import com.doannganh.salesmobileassistant.Manager.ExecMethodHTTP;
 import com.doannganh.salesmobileassistant.Manager.Server;
 import com.doannganh.salesmobileassistant.model.Product;
+import com.doannganh.salesmobileassistant.model.RoutePlan;
+import com.doannganh.salesmobileassistant.util.ConstantUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,7 +31,7 @@ public class ProductDAO {
 
     private volatile JSONArray jsonArrayTemp; // luu lai json khi asynx de goi tiep tuc executeJSON
 
-    String getProduct = "getProduct";
+    String getTAG = "getProduct";
 
     private ProductDAO(){}
 
@@ -40,6 +44,29 @@ public class ProductDAO {
         instance.context = context;
         instance.salesMobileAssistant = SalesMobileAssistant.getsInstance(context);
         return ProductDAO.instance;
+    }
+
+    public List<Product> getListProductFromDB(String company){
+        List<Product> list = new ArrayList<>();
+        db = salesMobileAssistant.getReadableDatabase();
+
+        String sql = "SELECT* FROM " + salesMobileAssistant.TB_PRODUCT
+                + " WHERE " + salesMobileAssistant.TB_PRODUCT_COMPANY
+                + " = '" + company + "'";
+        try {
+            Cursor cursor = db.rawQuery(sql, null);
+            cursor.moveToPosition(-1);
+            while (cursor.moveToNext()){
+                list.add(new Product(cursor));
+            }
+            cursor.close();
+        }catch (Exception e){
+            Log.d("LLLRPlanDAOGetListDB", e.getMessage());
+        }
+        finally {
+            db.close();
+            return list;
+        }
     }
 
     public List<Product> getListProduct(){
@@ -66,10 +93,14 @@ public class ProductDAO {
             while (cursor.moveToNext()){
                 quan = cursor.getInt(0);
             }
+            cursor.close();
         }catch (Exception e){
             Log.d("LLLProductDAOGetQuanDB", e.getMessage());
         }
-        return quan;
+        finally {
+            db.close();
+            return quan;
+        }
     }
 
     public int getQuantityCurent(String productID){
@@ -85,6 +116,54 @@ public class ProductDAO {
         }
         int inAPI = executeJSONArrayPartWhse(jsonArray, productID);
         return inAPI - inDB;
+    }
+
+    public long saveProductToDB(Product product){
+        db = salesMobileAssistant.getWritableDatabase();
+        long num = ConstantUtil.DB_CRUD_RESPONSE_EMPTY;
+        db.beginTransaction();
+
+        // kiem tra ton tai
+
+        String kt = "SELECT* FROM " + salesMobileAssistant.TB_PRODUCT + " WHERE "
+                + salesMobileAssistant.TB_PRODUCT_COMPANY + " = '" + product.getCompID()
+                + "' AND " + salesMobileAssistant.TB_PRODUCT_TYPE
+                + " = '" + product.getPTypeID() + "' AND " + salesMobileAssistant.TB_PRODUCT_ID
+                + " = '" + product.getProdID() + "'";
+        Cursor cKT = db.rawQuery(kt, null);
+
+        // neu ton tai -> return routeplan tu db
+        // dang ky
+        try {
+            ContentValues values = new ContentValues();
+            values.put(salesMobileAssistant.TB_PRODUCT_NAME, product.getProdName());
+            values.put(salesMobileAssistant.TB_PRODUCT_UNITPRICE, product.getUnitPrice());
+            values.put(salesMobileAssistant.TB_PRODUCT_UOM, product.getUOM());
+            values.put(salesMobileAssistant.TB_PRODUCT_DATEUPDATE, product.getDateUpdate());
+
+            if (cKT.getCount() != 0) {
+                cKT.moveToFirst();
+                num = db.update(salesMobileAssistant.TB_PRODUCT, values, salesMobileAssistant.TB_PRODUCT_COMPANY +
+                        " = '" + product.getCompID() + "' AND " + salesMobileAssistant.TB_PRODUCT_TYPE
+                        + " = '" + product.getPTypeID() + "' AND " + salesMobileAssistant.TB_PRODUCT_ID
+                        + " = '" + product.getProdID() + "'", null);
+            }else {
+                values.put(salesMobileAssistant.TB_PRODUCT_COMPANY, product.getCompID());
+                values.put(salesMobileAssistant.TB_PRODUCT_TYPE, product.getPTypeID());
+                values.put(salesMobileAssistant.TB_PRODUCT_ID, product.getProdID());
+                num = db.insert(salesMobileAssistant.TB_PRODUCT, null, values);
+            }
+            db.setTransactionSuccessful();
+        }
+        catch (SQLiteException ex){
+            Log.d("LLL"+getTAG, ex.getMessage());
+            num = ConstantUtil.DB_CRUD_RESPONSE_ERROR;
+        }
+        finally {
+            cKT.close();
+            db.endTransaction();
+            return num;
+        }
     }
 
     private List<Product> executeJSONArray(JSONArray jsonArray){

@@ -1,4 +1,4 @@
-package com.doannganh.salesmobileassistant.Views.util;
+package com.doannganh.salesmobileassistant.util;
 
 import com.doannganh.salesmobileassistant.model.Customer;
 import com.doannganh.salesmobileassistant.model.Product;

@@ -9,12 +9,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.doannganh.salesmobileassistant.R;
-import com.doannganh.salesmobileassistant.Views.util.MyDate;
+import com.doannganh.salesmobileassistant.util.MyDate;
 import com.doannganh.salesmobileassistant.model.MyJob;
+import com.doannganh.salesmobileassistant.model.RoutePlan;
 
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -22,7 +22,9 @@ import java.util.List;
 
 public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.MyViewHolder>{
     List<MyJob> list;
-    List<MyJob> listTemp;
+    List<MyJob> listTemp; // for filter
+    List<MyJob> listCurrent; // for filterIsActive
+    boolean isBackup = false; // just use when filter by week
 
     private OnClickPlus onClickPlus;
 
@@ -61,15 +63,14 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
     // Provide a suitable constructor (depends on the kind of dataset)
     public MyRecyclerAdapter(List<MyJob> list, OnClickPlus onClickPlus)
     {
-        this.list = list;
         this.listTemp = list;
         this.onClickPlus = onClickPlus;
+        this.list = list;
     }
 
     // Create new views (invoked by the layout manager)
     @Override
-    public MyRecyclerAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
-                                                     int viewType) {
+    public MyRecyclerAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.custom_list_job_item, parent, false);
@@ -97,8 +98,10 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
         holder.date.setText(sp.format(d));
         //holder.status.setText(m.getRoutePlan().isVisited() + "");
 
-        if(m.getRoutePlan().isVisited())
+        if(m.getRoutePlan().isVisited()== RoutePlan.VISITED)
             holder.status.setBackgroundResource(R.drawable.checked);
+        else if(m.getRoutePlan().isVisited()==RoutePlan.VISITOFFLINE)
+            holder.status.setBackgroundResource(R.drawable.exclamation_mark);
         else holder.status.setBackgroundResource(0);
         holder.note.setText(m.getRoutePlan().getNote());
 
@@ -116,6 +119,27 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
 
     public void setMyListTemp(){
         this.listTemp = new ArrayList<>(list);
+    }
+
+    public void filterJustIsActive (boolean bool){
+        if(isBackup || listCurrent == null) {
+            listCurrent = new ArrayList<>();
+            listCurrent.addAll(list);
+            isBackup = false;
+        }
+
+        if (bool) {
+            this.list.clear();
+
+            for (int i = 0; i < listCurrent.size(); i++) {
+                if (listCurrent.get(i).getRoutePlan().isVisited() != RoutePlan.VISITED)
+                    this.list.add(listCurrent.get(i));
+            }
+        } else {
+            this.list.clear();
+            this.list.addAll(listCurrent);
+        }
+        notifyDataSetChanged();
     }
 
     public void filterByWeek (CharSequence charSequence){
@@ -147,6 +171,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
 
             }
 
+            isBackup = true;
             notifyDataSetChanged();
         }
 
@@ -172,6 +197,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
 
         }
 
+        isBackup = true;
         notifyDataSetChanged();
     }
 

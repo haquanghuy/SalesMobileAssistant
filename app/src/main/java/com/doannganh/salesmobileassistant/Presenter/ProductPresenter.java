@@ -3,6 +3,7 @@ package com.doannganh.salesmobileassistant.Presenter;
 import android.content.Context;
 
 import com.doannganh.salesmobileassistant.Manager.DAO.ProductDAO;
+import com.doannganh.salesmobileassistant.Views.activity.ListOrdersActivity;
 import com.doannganh.salesmobileassistant.model.Product;
 
 import java.util.List;
@@ -33,6 +34,29 @@ public class ProductPresenter {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public List<Product> getListProductFromDB(String company){
+        try {
+            return productDAO.getListProductFromDB(company);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public long saveProductToDB(List<Product> products){
+        long num = 0;
+        try {
+            for(Product product : products)
+                num += productDAO.saveProductToDB(product);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+        finally {
+            return num;
         }
     }
 

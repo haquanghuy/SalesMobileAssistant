@@ -1,6 +1,9 @@
 package com.doannganh.salesmobileassistant.model;
 
+import android.database.Cursor;
 import android.util.Log;
+
+import com.doannganh.salesmobileassistant.Manager.DAO.SalesMobileAssistant;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,6 +13,19 @@ import java.io.Serializable;
 public class Account implements Serializable {
     public String getUsername() {
         return username;
+    }
+
+    public Account(Cursor cursor){
+        try {
+            company = cursor.getString(cursor.getColumnIndex(SalesMobileAssistant.TB_ACCOUNT_COMPANYID));
+            id = cursor.getInt(cursor.getColumnIndex(SalesMobileAssistant.TB_ACCOUNT_ID));
+            username = cursor.getString(cursor.getColumnIndex(SalesMobileAssistant.TB_ACCOUNT_USERNAME));
+            password = cursor.getString(cursor.getColumnIndex(SalesMobileAssistant.TB_ACCOUNT_PASSWORD));
+            type = cursor.getInt(cursor.getColumnIndex(SalesMobileAssistant.TB_ACCOUNT_TYPE))==1?true:false;
+            emplID = cursor.getString(cursor.getColumnIndex(SalesMobileAssistant.TB_ACCOUNT_EMPLOYEEID));
+        }catch (Exception ex){
+            Log.d("LLLRoutePlanCursor", ex.getMessage());
+        }
     }
 
     public Account(JSONObject jsonObject){

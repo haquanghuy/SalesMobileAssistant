@@ -8,6 +8,7 @@ import android.os.Bundle;
 import com.doannganh.salesmobileassistant.Presenter.ConnectionConfigPresenter;
 import com.doannganh.salesmobileassistant.R;
 import com.doannganh.salesmobileassistant.Manager.Server;
+import com.doannganh.salesmobileassistant.util.LanguageChange;
 import com.doannganh.salesmobileassistant.WelcomeActivity;
 import com.doannganh.salesmobileassistant.model.ConnectionConfig;
 
@@ -16,6 +17,11 @@ public class SplashScreenActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        LanguageChange languageChange;
+        languageChange = new LanguageChange(SplashScreenActivity.this);
+        languageChange.loadLocale();
+
         setContentView(R.layout.activity_splash_screen);
 
         ConnectionConfigPresenter configPresenter = ConnectionConfigPresenter.Instance(getApplicationContext());

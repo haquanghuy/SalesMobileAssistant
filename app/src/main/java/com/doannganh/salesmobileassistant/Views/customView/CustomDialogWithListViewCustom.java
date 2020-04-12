@@ -44,7 +44,7 @@ public class CustomDialogWithListViewCustom extends Dialog {
         ListView lv = (ListView) findViewById(R.id.lvDialogCustomList);
 
         CustomAdapterListView clad = new CustomAdapterListView(
-                activity, R.layout.custom_list_item, list);
+                activity, list);
         lv.setAdapter(clad);
 
 

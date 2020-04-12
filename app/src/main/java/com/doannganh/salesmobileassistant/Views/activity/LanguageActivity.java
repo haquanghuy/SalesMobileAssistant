@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.doannganh.salesmobileassistant.R;
-import com.doannganh.salesmobileassistant.Views.util.LanguageChange;
+import com.doannganh.salesmobileassistant.util.LanguageChange;
 
 import java.util.ArrayList;
 import java.util.List;

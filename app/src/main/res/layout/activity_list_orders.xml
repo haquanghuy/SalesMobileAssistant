@@ -67,17 +67,24 @@
             android:text="OK"
             android:id="@+id/btnOrderListOK"
             android:visibility="invisible"
-            android:onClick="ClickButtonOK"
             android:layout_width="45dp"
             android:layout_height="38dp"/>
     </LinearLayout>
 
     <ListView
+        android:visibility="gone"
         android:paddingLeft="@dimen/public_padding"
         android:paddingRight="@dimen/public_padding"
         android:background="@color/colorDefaultBackgView"
         android:id="@+id/lvListOrders"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+    <TextView
+        android:id="@+id/txtEmplty"
+        android:gravity="center"
+        android:text="@string/listorder_no_order"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>

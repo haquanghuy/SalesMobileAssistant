@@ -1,20 +1,18 @@
-package com.doannganh.salesmobileassistant.Views.util;
+package com.doannganh.salesmobileassistant.util;
 
-import android.app.ActionBar;
 import android.app.Activity;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.widget.Toast;
+import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
-
-import com.doannganh.salesmobileassistant.Presenter.OrderPresenter;
 
 import java.net.InetAddress;
 
 public class UtilMethod {
+
+    public static void hideKeyboardFrom(Activity context) {
+        context.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE
+                |WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+    }
 
     public static String makeMyURLByAPI(String server, String entry, @Nullable String param){
         String re = "";
@@ -51,18 +49,6 @@ public class UtilMethod {
                 return "Completed";
         }
         return "NaN";
-    }
-
-    public static int convertStatusToId(String statusName){
-        switch (statusName){
-            case "Pending":
-                return 1;
-            case "Verifying":
-                return 2;
-            case "Completed":
-                return 3;
-        }
-        return -1;
     }
 
     public static String formartDoubleToStringInt(double d)

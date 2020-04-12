@@ -1,23 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    android:padding="@dimen/public_padding"
-    android:weightSum="10"
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:padding="7dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <CheckedTextView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/txtCustomListWithRadioBT"
-        android:textSize="20sp"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/listPreferredItemHeightSmall"
+        android:textAppearance="?android:attr/textAppearanceListItemSmall"
         android:gravity="center_vertical"
-        android:text="This is text"
-        android:layout_weight="9"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content" />
+        android:paddingLeft="2dp"
+        android:checkMark="?android:attr/listChoiceIndicatorSingle"/>
 
-    <RadioButton
-
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"/>
 
 </LinearLayout>

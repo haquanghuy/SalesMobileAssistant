@@ -38,11 +38,11 @@ public class OrderDetailPresenter {
         }
     }
 
-    public List<OrderDetail> getListOrder(String myID){
-        return orderDetailDAO.getListOrder(myID);
+    public List<OrderDetail> getListOrderDetail(String myID){
+        return orderDetailDAO.getListOrderDetail(myID);
     }
 
-    public boolean PostOrder(List<HashMap> hashMap){
+    public boolean postNewOrderDetail(List<HashMap> hashMap){
         boolean re = orderDetailDAO.postNewOrderDetail(hashMap);
         if(re) {
             List<OrderDetail> l = new ArrayList<>();
@@ -55,11 +55,15 @@ public class OrderDetailPresenter {
         return re;
     }
 
-    public int saveListOrderDetailToDB(List<OrderDetail> orderDetails){
+    public long saveListOrderDetailToDB(List<OrderDetail> orderDetails){
         return orderDetailDAO.saveListOrderDetailToDB(orderDetails);
     }
 
     public List<OrderDetail> getListOrderDetailFromDB(String company, String myOrderID){
         return orderDetailDAO.getListOrderDetailFromDB(company, myOrderID);
+    }
+
+    public boolean deleteOrderDetailFromDB(String companyID, String myOrderID){
+        return orderDetailDAO.deleteOrderDetailFromDB(companyID, myOrderID);
     }
 }

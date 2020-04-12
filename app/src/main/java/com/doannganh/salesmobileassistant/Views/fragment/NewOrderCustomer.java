@@ -16,12 +16,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.doannganh.salesmobileassistant.Presenter.OrderPresenter;
 import com.doannganh.salesmobileassistant.R;
 import com.doannganh.salesmobileassistant.Views.activity.MainActivity;
 import com.doannganh.salesmobileassistant.Views.activity.NewOrderActivity;
 import com.doannganh.salesmobileassistant.Views.customView.CustomDialogWithListViewCustom;
-import com.doannganh.salesmobileassistant.Views.util.UtilFilter;
+import com.doannganh.salesmobileassistant.util.UtilFilter;
 import com.doannganh.salesmobileassistant.model.Custom_list_item;
 import com.doannganh.salesmobileassistant.model.Customer;
 import com.doannganh.salesmobileassistant.model.Order;
@@ -60,13 +59,13 @@ public class NewOrderCustomer extends Fragment {
     public void onCreate(@androidx.annotation.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-            // init orderhead
-            String myID = NewOrderActivity.myOrderID;
+        // init orderhead
+        String myID = NewOrderActivity.myOrderID;
 
-            if (myID != null) {
-                isReady = true;
-                NewOrderActivity.orderHead = new Order(MainActivity.account.getCompany(), myID);
-            }
+        if (myID != null) {
+            isReady = true;
+            NewOrderActivity.orderHead = new Order(MainActivity.account.getCompany(), myID);
+        }
 
     }
 
@@ -125,11 +124,11 @@ public class NewOrderCustomer extends Fragment {
     }
 
     private void EventClickCustomer() {
-        if(orderS != null) {
+        if (orderS != null) {
             //customer = MainActivity.listCustomer.get(positionSelect);
             customer = UtilFilter.getCustomerByID(MainActivity.listCustomer, orderS.getCustID());
 
-            if(customer==null){
+            if (customer == null) {
                 Toast.makeText(context, R.string.neworder_invalid_customer, Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -138,7 +137,7 @@ public class NewOrderCustomer extends Fragment {
             edtCustAddress2.setText(customer.getAddress2());
             return;
         }
-        // tao list cobobox
+        // tao list combobox
         listComboBox = new ArrayList<>();
 
         for (Customer c : MainActivity.listCustomer){
@@ -149,9 +148,9 @@ public class NewOrderCustomer extends Fragment {
             @Override
             public void onClick(View view) {
 
-                CustomDialogWithListViewCustom customDialogWithListRadio = new CustomDialogWithListViewCustom(
+                CustomDialogWithListViewCustom customDialog = new CustomDialogWithListViewCustom(
                         getActivity(), listComboBox, btnCustNameID.getId());
-                customDialogWithListRadio.show();
+                customDialog.show();
 /*
                 new Thread(new Runnable() {
                     @Override

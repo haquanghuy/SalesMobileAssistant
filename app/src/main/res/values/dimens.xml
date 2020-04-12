@@ -5,4 +5,5 @@
     <dimen name="public_padding">15dp</dimen>
     <dimen name="public_textSize">16sp</dimen>
     <dimen name="public_textSize_title">22sp</dimen>
+    <dimen name="public_imageSize">50dp</dimen>
 </resources>

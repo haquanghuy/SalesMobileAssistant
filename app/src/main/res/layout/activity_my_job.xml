@@ -14,6 +14,7 @@
 
         <Button
             android:id="@+id/btnJobByDay"
+            android:textSize="12sp"
             android:textAlignment="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -27,22 +28,50 @@
             <ImageButton
                 android:id="@+id/imbRoutePlanRefresh"
                 android:src="@drawable/ic_refresh"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:background="@null"
+                android:layout_width="@dimen/public_imageSize"
+                android:layout_height="@dimen/public_imageSize"/>
 
             <Button
                 android:id="@+id/btnRoutePlanToday"
                 android:text="Today"
+                android:textSize="11sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
             <Button
                 android:id="@+id/btnRoutePlanThisMonth"
                 android:text="This week"
+                android:textSize="11sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
     </LinearLayout>
+
+
+    <LinearLayout
+        android:background="@drawable/login_custom"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_marginLeft="2dp"
+            android:text="@string/routeplan_numOfJob"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/txtJobNum"
+            android:layout_marginLeft="2dp"
+            android:text="50"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <TextView
+        android:background="@color/colorDefaultBackg"
+        android:layout_width="match_parent"
+        android:layout_height="1.5dp"/>
 
     <LinearLayout
         android:orientation="vertical"
@@ -63,7 +92,7 @@
             android:background="@color/colorDefaultBackg"
             android:gravity="center"
             android:visibility="gone"
-            android:text="No job" />
+            android:text="@string/routeplan_no_job" />
 
     </LinearLayout>
 
