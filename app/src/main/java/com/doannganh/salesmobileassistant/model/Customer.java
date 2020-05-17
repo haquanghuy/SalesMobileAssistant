@@ -23,6 +23,18 @@ public class Customer implements Serializable {
     String PhoneNum;
     double TrueDiscountPercent;
 
+    public static final String COMPID = "CompID";
+    public static final String EMPLID = "EmplID";
+    public static final String CUSTID = "CustID";
+    public static final String CUSTNAME = "CustName";
+    public static final String ADDRESS1 = "Address1";
+    public static final String ADDRESS2 = "Address2";
+    public static final String ADDRESS3 = "Address3";
+    public static final String CITY = "City";
+    public static final String COUNTRY = "Country";
+    public static final String PHONENUM = "PhoneNum";
+    public static final String DISCOUNT = "Discount";
+
     public Customer(String compID, String emplID, int custID, String custName,
                     String address1, String address2, String address3, String city,
                     String country, String phoneNum, double trueDiscountPercent) {
@@ -41,17 +53,17 @@ public class Customer implements Serializable {
 
     public Customer(JSONObject jsonObject){
         try {
-            CompID = jsonObject.getString("CompID");
-            EmplID = jsonObject.getString("EmplID");
-            CustID = jsonObject.getInt("CustID");
-            CustName = jsonObject.getString("CustName");
-            Address1 = jsonObject.getString("Address1");
-            Address2 = jsonObject.getString("Address2");
-            Address3 = jsonObject.getString("Address3");
-            City = jsonObject.getString("City");
-            Country = jsonObject.getString("Country");
-            PhoneNum = jsonObject.getString("PhoneNum");
-            TrueDiscountPercent = jsonObject.getDouble("Discount");
+            CompID = jsonObject.getString(COMPID);
+            EmplID = jsonObject.getString(EMPLID);
+            CustID = jsonObject.getInt(CUSTID);
+            CustName = jsonObject.getString(CUSTNAME);
+            Address1 = jsonObject.getString(ADDRESS1);
+            Address2 = jsonObject.getString(ADDRESS2);
+            Address3 = jsonObject.getString(ADDRESS3);
+            City = jsonObject.getString(CITY);
+            Country = jsonObject.getString(COUNTRY);
+            PhoneNum = jsonObject.getString(PHONENUM);
+            TrueDiscountPercent = jsonObject.getDouble(DISCOUNT);
         } catch (JSONException e) {
             e.printStackTrace();
             Log.d("LLLpublicCustomerJson", e.getMessage());

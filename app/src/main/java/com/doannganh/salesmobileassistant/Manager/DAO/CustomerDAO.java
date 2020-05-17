@@ -18,6 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -149,5 +150,9 @@ public class CustomerDAO {
             db.endTransaction();
             return num;
         }
+    }
+
+    public boolean postNewCustomerToAPI(HashMap hashMap){
+        return ExecMethodHTTP.PostJSONToServer(postURL,hashMap);
     }
 }

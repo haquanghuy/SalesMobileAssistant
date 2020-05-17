@@ -19,6 +19,7 @@ import java.net.CookiePolicy;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.HashMap;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -28,12 +29,18 @@ public class ExecMethodHTTP {
 
     public static String docNoiDung_Tu_URL(String theUrl){
         StringBuilder content = new StringBuilder();
+        URLConnection urlConnection;
         try    {
             // create a url object
             URL url = new URL(theUrl);
-
-            // create a urlconnection object
-            HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
+            String protocal = theUrl.substring(0,5);
+            if(protocal.equals("http:")){
+                urlConnection = (HttpURLConnection) url.openConnection();
+            } else if(protocal.equals("https")){
+                urlConnection = (HttpsURLConnection) url.openConnection();
+            } else {
+                urlConnection = (HttpURLConnection) url.openConnection();
+            }
 
             // wrap the urlconnection in a bufferedreader
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));

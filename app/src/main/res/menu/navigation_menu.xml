@@ -2,20 +2,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:id="@+id/menuHome"
-        android:icon="@drawable/home"
+        android:icon="@drawable/ic_home"
         android:title="@string/navi_home"/>
 
-    <item android:id="@+id/menuHome1"
-        android:icon="@drawable/client"
-        android:title="@string/navi_func2"/>
 
-    <item android:id="@+id/menuHome2"
-        android:icon="@drawable/client"
-        android:title="@string/navi_func3"/>
-
-    <item android:id="@+id/menuHome3"
-        android:icon="@drawable/client"
+    <item android:id="@+id/menuFeedback"
+        android:icon="@drawable/ic_feedback_black_24dp"
         android:title="@string/navi_func4"/>
+
+
+    <item android:id="@+id/menuScanQR"
+        android:icon="@drawable/scan_qr"
+        android:title="Scan QR"/>
+
+    <item android:id="@+id/menuSetting"
+        android:icon="@drawable/ic_action_setting"
+        android:title="@string/setting_tag"/>
 
     <item android:id="@+id/menuHomeLogout"
         android:icon="@drawable/logout"

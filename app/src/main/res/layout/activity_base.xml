@@ -1,0 +1,72 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/background_light"
+    tools:context=".Views.activity.MyCameraActivity" >
+
+    <FrameLayout
+        android:visibility="gone"
+        android:id="@+id/frameLayourContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <FrameLayout
+        android:id="@+id/frameLayoutRoot"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:src="@drawable/ic_action_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_margin="@dimen/activity_vertical_margin"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/btnLoad"
+                android:text="Load hinh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/btnPhantich"
+                android:text="Phan tich"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:background="@drawable/custom_border_edittext"
+                android:id="@+id/txtBaseText"
+                android:textSize="22sp"
+                android:padding="@dimen/public_padding"
+                android:text="@string/camera_not_permission"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:paddingLeft="@dimen/public_padding"
+                android:paddingRight="@dimen/public_padding"
+                android:id="@+id/btnCameraTryAgain"
+                android:textColor="#fff"
+                android:background="@color/colorPrimary"
+                android:text="@string/camera_button_try_again"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageView
+                android:id="@+id/test"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+    </FrameLayout>
+
+</FrameLayout>

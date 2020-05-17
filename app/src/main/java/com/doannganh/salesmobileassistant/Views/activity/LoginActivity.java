@@ -23,6 +23,7 @@ import com.doannganh.salesmobileassistant.WelcomeActivity;
 import com.doannganh.salesmobileassistant.model.Account;
 import com.doannganh.salesmobileassistant.model.ConnectionConfig;
 import com.doannganh.salesmobileassistant.model.Employee;
+import com.doannganh.salesmobileassistant.util.UtilMethod;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -50,6 +51,7 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UtilMethod.hideKeyboardFrom(LoginActivity.this);
                 if(checkBox.isChecked())
                     accountPresenter.saveAccountPreferences(getApplicationContext(),
                             edtUser.getText()+"", edtPass.getText()+"");
