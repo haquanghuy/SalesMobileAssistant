@@ -4,8 +4,10 @@ import android.content.Context;
 
 import com.doannganh.salesmobileassistant.Manager.DAO.CustomerDAO;
 import com.doannganh.salesmobileassistant.model.Customer;
-import com.doannganh.salesmobileassistant.model.Product;
 
+import org.json.JSONObject;
+
+import java.util.HashMap;
 import java.util.List;
 
 public class CustomerPresenter {
@@ -28,7 +30,7 @@ public class CustomerPresenter {
         return CustomerPresenter.instance;
     }
 
-    public List<Customer> GetListCustomer(String employID){
+    public List<Customer> getListCustomer(String employID){
         try {
             return customerDAO.getListCustomers(employID);
         } catch (Exception e) {
@@ -58,5 +60,14 @@ public class CustomerPresenter {
         finally {
             return num;
         }
+    }
+
+    public boolean postNewCustomerToAPI(HashMap hashMap){
+        boolean re = customerDAO.postNewCustomerToAPI(hashMap);
+        if(re) {
+            Customer c = new Customer(new JSONObject(hashMap));
+            customerDAO.saveCustomerToDB(c);
+        }
+        return re;
     }
 }

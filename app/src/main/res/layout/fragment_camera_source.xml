@@ -1,0 +1,98 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/background_light"
+    tools:context=".Views.activity.MyCameraActivity" >
+
+    <!-- header -->
+    <LinearLayout
+        android:background="#3D3D3A"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageButton
+            android:id="@+id/imbCameraBack"
+            android:padding="@dimen/public_padding"
+            android:scaleType="fitXY"
+            android:background="@null"
+            android:src="@drawable/ic_action_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/txtMyCameraTitle"
+            android:padding="@dimen/public_padding"
+            android:text="Hay chup man hinh truoc cmnd cua khach hang moi"
+            android:textSize="20sp"
+            android:textColor="#fff"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <!-- camera -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <RelativeLayout
+            android:background="#3D3D3A"
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="74dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true" >
+
+            <Button
+                android:id="@+id/btnTakePicture"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:background="@android:drawable/ic_menu_camera" />
+<!--
+            <HorizontalScrollView
+                android:id="@+id/horizontalScrollView"
+                android:layout_width="0dip"
+                android:layout_height="match_parent"
+                android:layout_weight="1.05" >
+
+                <LinearLayout
+                    android:id="@+id/scrollImages"
+                    android:layout_width="64dp"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal" >
+
+                </LinearLayout>
+            </HorizontalScrollView>
+ -->
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_above="@+id/linearLayout"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <SurfaceView
+                android:id="@+id/surfaceView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <ImageView
+                android:background="@null"
+                android:layout_centerInParent="true"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/camera_frame" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

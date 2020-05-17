@@ -11,6 +11,7 @@ public class ConstantUtil {
     public static String INIT_STRING_EMPTY = "";
 
 
+    public static final int REQUEST_CODE_NO_CARE = 0;
     public static final int REQUEST_CODE_111 = 111;
     public static final int REQUEST_CODE_222 = 222;
 }

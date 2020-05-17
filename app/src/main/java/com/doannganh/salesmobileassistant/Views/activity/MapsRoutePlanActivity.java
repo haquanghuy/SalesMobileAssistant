@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
@@ -14,7 +13,6 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -72,9 +70,9 @@ public class MapsRoutePlanActivity extends AppCompatActivity
     private final LocationListener mLocationListener = new LocationListener() {
         @Override
         public void onLocationChanged(final Location location) {
-            mapPlaceItemHost.setLat(location.getLatitude());
-            mapPlaceItemHost.setLng(location.getLongitude());
-            mapFragment.getMapAsync(MapsRoutePlanActivity.this);
+//            mapPlaceItemHost.setLat(location.getLatitude());
+//            mapPlaceItemHost.setLng(location.getLongitude());
+//            mapFragment.getMapAsync(MapsRoutePlanActivity.this);
         }
 
         @Override
@@ -102,8 +100,18 @@ public class MapsRoutePlanActivity extends AppCompatActivity
         LoadActionBar();
         GetActivity();
 
-        if(!PermissionUtil.checkPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                && !PermissionUtil.checkPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION)){
+        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+
+        EventClickButtonDirection();
+        EventClickRefresh();
+        EventClickTextGPS();
+
+        if (!PermissionUtil.checkPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                && !PermissionUtil.checkPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION)) {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(MapsRoutePlanActivity.this);
             builder.setTitle(R.string.maprouteplan_needpermission_title);
@@ -117,7 +125,7 @@ public class MapsRoutePlanActivity extends AppCompatActivity
             builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    PermissionUtil.showDialogPermission(MapsRoutePlanActivity.this
+                    PermissionUtil.showDialogPermission(MapsRoutePlanActivity.this, ConstantUtil.REQUEST_CODE_NO_CARE
                             , new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION});
                 }
             });
@@ -125,18 +133,8 @@ public class MapsRoutePlanActivity extends AppCompatActivity
             return;
         }
 
-
-        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-
-        EventClickButtonDirection();
-        EventClickRefresh();
-        EventClickTextGPS();
-
         new AsyncTaskLoadActi().execute();
+        //mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, mLocationListener);
     }
 
     private void AnhXa() {
@@ -159,7 +157,13 @@ public class MapsRoutePlanActivity extends AppCompatActivity
         imbRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new AsyncTaskLoadActi().execute();
+                if (PermissionUtil.checkPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                        && PermissionUtil.checkPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                    new AsyncTaskLoadActi().execute();
+                } else {
+                    PermissionUtil.showDialogPermission(MapsRoutePlanActivity.this, ConstantUtil.REQUEST_CODE_111
+                            , new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION});
+                }
             }
         });
     }
@@ -169,11 +173,20 @@ public class MapsRoutePlanActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 try {
-                    if(PermissionUtil.haveNetworkConnection(getApplicationContext())) {
-                        new DirectionFinderService(MapsRoutePlanActivity.this
-                                , "TMA tower", "371 nguyen kiem")
-                                .execute();
-                    } else PermissionUtil.showToastNetworkError(getApplicationContext());
+                    if (PermissionUtil.checkPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                            && PermissionUtil.checkPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                        Location location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        double longitude = location.getLongitude();
+                        double latitude = location.getLatitude();
+                        String origin = latitude + "," + longitude;
+
+                        if(PermissionUtil.haveNetworkConnection(getApplicationContext())) {
+                            new DirectionFinderService(MapsRoutePlanActivity.this
+                                    , origin, addressCustomer)
+                                    .execute();
+                        } else PermissionUtil.showToastNetworkError(getApplicationContext());
+                    } else PermissionUtil.showToastNotPermission(getApplicationContext());
+
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -227,6 +240,7 @@ public class MapsRoutePlanActivity extends AppCompatActivity
         if(requestCode == ConstantUtil.REQUEST_CODE_111){
             if (grantResults.length > 0){
                 // have a permission
+                new AsyncTaskLoadActi().execute();
                 mapFragment.getMapAsync(MapsRoutePlanActivity.this);
             } else {
                 // don't permission
@@ -242,14 +256,8 @@ public class MapsRoutePlanActivity extends AppCompatActivity
 
         if(mapPlaceItemCus != null){
             LatLng sydney = new LatLng(mapPlaceItemCus.getLat(), mapPlaceItemCus.getLng());
-            mMap.addMarker(new MarkerOptions().position(sydney).title(mapPlaceItemCus.getAddress()));
+            destinationMarkers.add(mMap.addMarker(new MarkerOptions().position(sydney).title(mapPlaceItemCus.getAddress())));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 13));
-        }
-
-        if(mapPlaceItemHost != null){
-            LatLng sydney = new LatLng(mapPlaceItemHost.getLat(), mapPlaceItemHost.getLng());
-            mMap.addMarker(new MarkerOptions().position(sydney).title(mapPlaceItemHost.getAddress()));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         }
 
         mMap.setMyLocationEnabled(true);

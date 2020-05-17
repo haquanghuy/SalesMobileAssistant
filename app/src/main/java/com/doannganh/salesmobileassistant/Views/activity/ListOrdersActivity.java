@@ -333,7 +333,6 @@ public class ListOrdersActivity extends AppCompatActivity implements InterfaceRe
                     listView.clearTextFilter();
                     customAdapterListView.filter("");
                 }else{
-                    String texto = s;
                     customAdapterListView.filter(s);
                 }
                 return true;

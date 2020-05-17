@@ -24,7 +24,7 @@
     <string name="main_icon_func2">Sản phẩm</string>
     <string name="main_icon_func3">Công việc</string>
     <string name="main_icon_func4">Tài khoản</string>
-    <string name="main_icon_func5">Công cụ</string>
+    <string name="main_icon_func5">Khách hàng</string>
     <string name="main_icon_func6">Cài đặt</string>
     <string name="navi_logout">Đăng xuất</string>
     <string name="neworder_aboutcustomer">Thông tin về khách hàng</string>
@@ -123,4 +123,11 @@
     <string name="maprouteplan_findpath">Chỉ đường</string>
     <string name="maprouteplan_menu_createorder">Bắt đầu tạo đơn hàng</string>
     <string name="maprouteplan_text_showGPS">Hãy bật GPS để hiển thị tốt nhất. <u>Bật ngay !</u></string>
+    <string name="main_qr_title">Đưa camera đến mã QR của bạn</string>
+    <string name="customer_tag">Khách hàng</string>
+    <string name="customers_scan_cmnd">Hãy chụp mặt trước CMND của khách hàng để tiếp tục</string>
+    <string name="camera_button_try_again">Thử lại</string>
+    <string name="camera_not_permission">Ứng dụng cần quyền truy cập máy ảnh để sử dụng được tính năng này. Hãy nhấn thử lại để yêu cầu cấp quyền.</string>
+    <string name="checkpermission_error">Ứng dụng cần quyền để có thể truy cập dịch vụ. Hãy nhấn thử lại để yêu cầu cấp quyền</string>
+    <string name="feedback_senok">Phản hồi đã được gửi</string>
 </resources>

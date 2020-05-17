@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -39,9 +40,9 @@ import com.doannganh.salesmobileassistant.Presenter.ProductInSitePresenter;
 import com.doannganh.salesmobileassistant.Presenter.ProductPresenter;
 import com.doannganh.salesmobileassistant.Presenter.RoutePlanPresenter;
 import com.doannganh.salesmobileassistant.R;
-import com.doannganh.salesmobileassistant.TestActivity;
 import com.doannganh.salesmobileassistant.Views.MainIconFunction;
 import com.doannganh.salesmobileassistant.Views.adapter.CustomAdapterGridView;
+import com.doannganh.salesmobileassistant.Views.customView.DialogSentFeedback;
 import com.doannganh.salesmobileassistant.util.PermissionUtil;
 import com.doannganh.salesmobileassistant.util.ImageUtil;
 import com.doannganh.salesmobileassistant.util.LanguageChange;
@@ -106,7 +107,6 @@ public class MainActivity extends AppCompatActivity
         LoadMainFunction();
 
         OnClickEachOneIcon();
-
 
     }
 
@@ -281,9 +281,6 @@ public class MainActivity extends AppCompatActivity
                         break;
                     case 1:
                         ChangeActivity(PartsActivity.class);
-                        break;
-                    case 2:
-                        ChangeActivity(RoutePlanActivity.class);
                         break;/*
                     case 3:
                         Toast.makeText(MainActivity.this, "Developing", Toast.LENGTH_SHORT).show();
@@ -291,19 +288,16 @@ public class MainActivity extends AppCompatActivity
                     case 4:
                         Toast.makeText(MainActivity.this, "Developing", Toast.LENGTH_SHORT).show();
                         break;*/
+                    case 2:
+                        ChangeActivity(CustomerActivity.class);
+                        break;
                     case 3:
-                        ChangeActivity(SettingActivity.class);
+                        ChangeActivity(RoutePlanActivity.class);
                         break;
                 }
             }
         });
 
-        gridView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return event.getAction() == MotionEvent.ACTION_MOVE;
-            }
-        });
     }
 
     private void ChangeActivity(java.lang.Class c){
@@ -333,10 +327,10 @@ public class MainActivity extends AppCompatActivity
         list = new ArrayList<>();
         list.add(new Custom_grid_item(R.drawable.order, getString(R.string.main_icon_func1)));
         list.add(new Custom_grid_item(R.drawable.product, getString(R.string.main_icon_func2)));
-        list.add(new Custom_grid_item(R.drawable.myjob, getString(R.string.main_icon_func3)));
         //list.add(new Custom_grid_item(R.drawable.settup, getString(R.string.main_icon_func4)));
         //list.add(new Custom_grid_item(R.drawable.settup, getString(R.string.main_icon_func5)));
-        list.add(new Custom_grid_item(R.drawable.setting, getString(R.string.main_icon_func6)));
+        list.add(new Custom_grid_item(R.drawable.icon_customer, getString(R.string.main_icon_func5)));
+        list.add(new Custom_grid_item(R.drawable.myjob, getString(R.string.main_icon_func3)));
 
         customAdapterGridView = new CustomAdapterGridView(this, R.layout.custom_grid_item, list);
         gridView.setAdapter(customAdapterGridView);
@@ -389,15 +383,8 @@ public class MainActivity extends AppCompatActivity
                 coutRe = true;
             }
 
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    AsyncTaskGetJSONArray asyncTaskGetJSONArray = new AsyncTaskGetJSONArray();
-                    asyncTaskGetJSONArray.execute();
-                }
-            });
+            new AsyncTaskGetJSONArray().execute();
         }
-        else finish();
     }
 
     @Override
@@ -408,8 +395,24 @@ public class MainActivity extends AppCompatActivity
             case R.id.menuHome: {
                 break;
             }
-            case R.id.menuHome1: {
-                startActivity(new Intent(MainActivity.this, TestActivity.class));
+            case R.id.menuFeedback:
+                FragmentManager fm = getSupportFragmentManager();
+                DialogSentFeedback dialogSentFeedback = DialogSentFeedback.newInstance("new-dialog-sent");
+                dialogSentFeedback.show(fm, null);
+                break;
+            case R.id.menuSetting: {
+                ChangeActivity(SettingActivity.class);
+                break;
+            }
+            case R.id.menuScanQR:{
+                String title = getString(R.string.main_qr_title);
+                Intent intent = new Intent(this, MyCameraActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString(MyCameraActivity.INTENT_FLAP, MyCameraActivity.ACTION.FLAP_SCAN_QR.toString());
+                bundle.putString(MyCameraActivity.SHORT_TEXT_TITLE, title);
+                bundle.putBoolean(MyCameraActivity.IS_AUTOSCAN, true);
+                intent.putExtras(bundle);
+                startActivity(intent);
                 break;
             }
             case R.id.menuHomeLogout:
@@ -449,7 +452,7 @@ public class MainActivity extends AppCompatActivity
 
             if(PermissionUtil.haveNetworkConnection(getApplicationContext())) {
                 try {
-                    listCustomer = customerPresenter.GetListCustomer(account.getEmplID());
+                    listCustomer = customerPresenter.getListCustomer(account.getEmplID());
 
                     listProductSource = productPresenter.GetListProduct();
 
@@ -478,7 +481,7 @@ public class MainActivity extends AppCompatActivity
                     p.saveProductInSiteToDB(listProductInSite);
                 } catch (Exception e) {
                     Log.d("LLLMainActGetInit", e.getMessage());
-                    onBackPressed();
+                    //onBackPressed();
                 }
             } else {
                 listCustomer = customerPresenter.getListCustomerFromDB(account.getEmplID());

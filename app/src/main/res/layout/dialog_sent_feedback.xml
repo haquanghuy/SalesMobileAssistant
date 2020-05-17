@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:background="#FAECEC"
+    android:padding="@dimen/public_padding"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!-- header button -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/txtDialogSentClose"
+                android:text="Close"
+                android:textSize="18sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:id="@+id/txtDialogSentClear"
+                android:text="Clear all"
+                android:textSize="18sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txtDialogSentSubmit"
+            android:layout_alignParentRight="true"
+            android:text="Submit >"
+            android:textColor="#F44336"
+            android:textSize="18sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
+    <!-- content -->
+    <EditText
+        android:gravity="left|top"
+        android:id="@+id/edtDialogSentMessage"
+        android:background="@drawable/border_view_custom"
+        android:layout_width="match_parent"
+        android:layout_height="250dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btnDialogSentChoose"
+            android:text="Choose image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/txtDialogSentShowPath"
+            android:layout_marginLeft="5dp"
+            android:text="This is the name of image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -12,6 +12,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 import com.doannganh.salesmobileassistant.R;
 
 public class PermissionUtil {
@@ -41,7 +43,6 @@ public class PermissionUtil {
         Toast.makeText(context, R.string.checkconnect_error, Toast.LENGTH_SHORT).show();
     }
 
-
     // ----------------------------------------------------
     /**
      * Check permission
@@ -54,8 +55,12 @@ public class PermissionUtil {
         return true;
     }
 
-    public static void showDialogPermission(Activity activity, String[] permissions){
-        ActivityCompat.requestPermissions(activity, permissions,ConstantUtil.REQUEST_CODE_111);
+    public static void showDialogPermission(Activity activity, int requestCode, String[] permissions){
+        ActivityCompat.requestPermissions(activity, permissions, requestCode);
+    }
+
+    public static void showToastNotPermission(Context context){
+        Toast.makeText(context, R.string.checkpermission_error, Toast.LENGTH_LONG).show();
     }
 
     /**

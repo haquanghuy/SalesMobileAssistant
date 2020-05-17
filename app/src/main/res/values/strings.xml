@@ -57,8 +57,10 @@
     <string name="main_icon_func2">Product</string>
     <string name="main_icon_func3">My Job</string>
     <string name="main_icon_func4">My Account</string>
-    <string name="main_icon_func5">Tools</string>
+    <string name="main_icon_func5">Customer</string>
     <string name="main_icon_func6">Setting</string>
+
+    <string name="main_qr_title">Bringing the camera to the QR code</string>
 
     <!-- orders -->
     <string name="orders_tag">Orders</string>
@@ -104,12 +106,18 @@
     <!-- Sync order-->
     <string name="syncorder_tag">Sync Order</string>
 
+    <!-- Customer -->
+    <string name="customers_scan_cmnd">Please capture the front of the customer\'s ID card to continue</string>
+
     <!-- Product-->
     <string name="product_tag">Product</string>
 
     <!-- Product info-->
     <string name="productinfo_tag">Product Info</string>
     <string name="productinfo_title">Details for: </string>
+
+    <!-- Product-->
+    <string name="customer_tag">Customer</string>
 
     <!-- RoutePlanDAO-->
     <string name="routeplan_tag">Route Plan</string>
@@ -146,6 +154,7 @@
 
     <!-- util -->
     <string name="checkconnect_error">Please check your connect</string>
+    <string name="checkpermission_error">The application needs permission to access the service. Please press try again to request permission</string>
 
     <string name="post_json_success">The order has been sent to the server</string>
     <string name="post_json_error_order">System error. Check and post again</string>
@@ -164,5 +173,12 @@
     <string name="config_mess">Do you want to change value? If true, touch \'Yes\'</string>
     <string name="config_sync">Syncing your order...</string>
     <string name="neworder_invalid_customer">This customer is not under your jurisdiction.</string>
+
+    <!-- camera -->
+    <string name="camera_not_permission">The application needs camera access to use this feature. Please press try again to request permission.</string>
+    <string name="camera_button_try_again">Try again</string>
+
+    <!-- send feedback -->
+    <string name="feedback_senok">The feedback has been sent</string>
 
 </resources>

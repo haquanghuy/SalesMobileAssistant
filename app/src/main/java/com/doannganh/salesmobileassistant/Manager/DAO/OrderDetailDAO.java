@@ -120,7 +120,8 @@ public class OrderDetailDAO {
         String kt = "SELECT* FROM " + salesMobileAssistant.TB_ORDERDETAIL + " WHERE " + salesMobileAssistant.TB_ORDERDETAIL_COMPANY
                 + " = '" + order.getCompID() + "' AND " + salesMobileAssistant.TB_ORDERDETAIL_MYORDERID
                 + " = '" + order.getMyOrderID() + "' AND " + salesMobileAssistant.TB_ORDERDETAIL_PRODUCTID
-                + " = '" + order.getProdID() + "'";
+                + " = '" + order.getProdID() + "' AND " + salesMobileAssistant.TB_ORDERDETAIL_SITEID
+                + " = '" + order.getSiteID() + "'";
         Cursor cKT = db.rawQuery(kt, null);
 
         ContentValues values = new ContentValues();

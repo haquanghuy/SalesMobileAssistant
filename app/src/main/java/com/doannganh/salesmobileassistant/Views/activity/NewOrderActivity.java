@@ -459,8 +459,9 @@ public class NewOrderActivity extends AppCompatActivity implements InterfaceRetu
                 orderHead.setRequestDate(datePlan);
             }
 
-            if(StringUtil.isNullOrEmpty(orderHead.getRequestDate()))
-                orderHead.setRequestDate(orderShow.getRequestDate());
+//            if(StringUtil.isNullOrEmpty(orderHead.getRequestDate()))
+//                if(StringUtil.isNullOrEmpty(orderShow.getRequestDate()))
+//                    orderHead.setRequestDate(orderShow.getRequestDate());
 
             if (PermissionUtil.haveNetworkConnection(getApplicationContext())) {
                 HashMap hashMap = new HashMap();
